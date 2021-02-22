@@ -1,45 +1,37 @@
 import axios from 'axios';
-import router from './router/index';
 
-function request (url, method, params){
+const BASEURL = '/api';
+
+function request (url, method = 'get', data = {}){
   let options = {
     url, 
     method,
+    baseURL: BASEURL,
+    params: method === 'get' ? data : {},
+    data: data,
     headers: {
       'token': Cookies.get('token') || undefined,
     }
   };
-  if(method === 'post' || method === 'put'){
-    if(params) {
-      options['data'] = JSON.stringify(params);
-    }
-  } else {
-    if(params) {
-      options['params'] = params;
-    }
-  }
   return new Promise((resolve, reject) => {
     axios(options).then(resp => {
-      if(resp && resp.status === 401){
-        Cookies.remove('token');
-        router.push({ name: 'Login' });
-      } else {
+      if(resp.status == 200) {
         resolve(resp.data);
       }
     }).catch(resp => {
-      reject(resp)
+      reject(resp.data)
     })
   })
 }
 
-function http(func, data){
-  var params = {
-    request: data,
-    func
-  }
-  return new Promise((resolve, reject) => {
-    request('', '', params).then(data => {
-      resolve(data);
-    }).catch(reject)
-  })
+/**
+ * 登录
+ * @param {*} params 
+ */
+export function loginRequest (params) {
+  return request('/login', 'post', params)
+}
+
+export function queryOrderList(params) {
+  return request('/bill/query', 'post', params);
 }

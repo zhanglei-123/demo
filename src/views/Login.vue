@@ -9,7 +9,7 @@
           label-position="left" 
           :rules="formRules" 
           :model="form" 
-          ref="form">
+          ref="loginForm">
           <el-form-item label="用户名" prop="username">
             <el-input type="text" v-model="form.username" placeholder="请输入用户名"></el-input>
           </el-form-item>
@@ -18,13 +18,15 @@
           </el-form-item>
          <el-checkbox v-model="checked" @change="showPassword">显示密码</el-checkbox>
         </el-form>
-        <el-button type="primary" class="login-button">登录</el-button>
+        <el-button type="primary" class="login-button" @click="login">登录</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { loginRequest } from '../service';
+
 export default {
   data() {
     return {
@@ -43,6 +45,23 @@ export default {
   methods: {
     showPassword() {
       this.type =  this.checked ? 'text' : 'password'; // 密码显示隐藏
+    },
+    async login(){
+      const valid = this.$refs.loginForm.validate();
+      if(valid) {
+        const params = {
+          username: this.form.username,
+          password: this.form.password
+        }
+        let data = await loginRequest(params);
+        if(data.code == 1) {
+          this.$message.success('登录成功');
+          Cookies.set('token', data.data);
+          this.$router.push({ name: 'Index' });
+        } else {
+          this.$message.error('用户名密码错误');
+        }
+      }
     }
   }
 };

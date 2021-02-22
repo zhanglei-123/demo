@@ -5,7 +5,7 @@
         <span>充电设备地址：</span>
         <el-input 
           class="custom-input" 
-          v-model="address" 
+          v-model="addr" 
           placeholder="请输入充电设备地址" 
           clearable
           size="mini">
@@ -15,7 +15,7 @@
         <span>订单号：</span>
         <el-input
           class="custom-input"
-          v-model="order_number"
+          v-model="no"
           placeholder="请输入订单号"
           clearable
           size="mini">
@@ -24,7 +24,7 @@
       <div class="operation-item">
         <span>开始时间：</span>
         <el-date-picker
-          v-model="startTime"
+          v-model="begin_time"
           type="datetime"
           placeholder="选择开始时间"
           size="mini">
@@ -33,7 +33,7 @@
       <div class="operation-item">
         <span>结束时间：</span>
         <el-date-picker
-          v-model="endTime"
+          v-model="end_time"
           type="datetime"
           placeholder="选择结束时间"
           size="mini">
@@ -96,14 +96,16 @@
 
 <script>
 import { convertDate } from '../common';
+import { queryOrderList } from '../service';
+import dayjs from 'dayjs';
 
 export default {
   data () {
     return {
-      address: '',
-      order_number: '',
-      startTime: '',
-      endTime: '',
+      addr: '11010111194',
+      no: '',
+      begin_time: '',
+      end_time: '',
       tableData: []
     }
   },
@@ -115,7 +117,11 @@ export default {
       return val;
     }
   },
-  created() {},
+  created() {
+    this.begin_time = dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss');
+    this.end_time = dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    this.queryOrderList();
+  },
   methods: {
     startTimeFormat(row) {
       if(row.start_time) {
@@ -130,6 +136,17 @@ export default {
       } else {
         return '--';
       }
+    },
+    // 查询订单列表
+    async queryOrderList() {
+      const params = {
+        // beginTime: this.begin_time,
+        // endTime: this.end_time,
+        // billCode: this.no,
+        terminalAddr: this.addr
+      };
+      let data = await queryOrderList(params);
+      console.log(data);
     },
     handleCellClick() {
       this.$router.push({ name: 'OrderDetail' });
