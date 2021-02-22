@@ -39,54 +39,55 @@
           size="mini">
         </el-date-picker>
       </div>
-      <el-button type="primary" size="mini" class="custom-btn">查询</el-button>
+      <el-button type="primary" size="mini" class="custom-btn" @click="queryOrderList">查询</el-button>
     </div>
     <div class="order-content">
       <el-table
         :data="tableData"
         style="width: 100%"
-        border>
+        border
+        v-loading="tableLoading">
         <el-table-column type="index" label="序号" align="center" width="100px"></el-table-column>
-        <el-table-column label="订单编号" prop="" align="center">
+        <el-table-column label="订单编号" prop="bill_code" align="center">
           <template slot-scope="scope">
-            <span @click="handleCellClick"></span>
+            <span @click="handleCellClick(scope.row)" class="order_code"> {{ scope.row.bill_code }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电设备地址" prop="" align="center">
+        <el-table-column label="充电设备地址" prop="terminal_addr" align="center">
           <template slot-scope="scope">
-            <span> {{ | fmtEmptyText}} </span>
+            <span> {{ scope.row.terminal_addr | fmtEmptyText}} </span>
           </template>
         </el-table-column>
-        <el-table-column label="设备类型" prop="" align="center">
+        <el-table-column label="设备类型" prop="terminal_type" align="center">
           <template slot-scope="scope">
-            <span> {{ | fmtEmptyText }} </span>
+            <span> {{ scope.row.terminal_type | fmtEmptyText }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电枪口号" prop="" align="center">
+        <el-table-column label="充电枪口号" prop="gun_code" align="center">
           <template slot-scope="scope">
-            <span> {{ | fmtEmptyText }} </span>
+            <span> {{ scope.row.gun_code | fmtEmptyText }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电电量" prop="" align="center">
+        <el-table-column label="充电电量" prop="charging_power" align="center">
           <template slot-scope="scope">
-            <span> {{ | fmtEmptyText }} </span>
+            <span> {{ scope.row.charging_power | fmtEmptyText }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="启动充电方式" prop="" align="center">
+        <el-table-column label="启动充电方式" prop="charging_type" align="center">
           <template slot-scope="scope">
-            <span> {{ | fmtEmptyText }} </span>
+            <span> {{ scope.row.charging_type | fmtEmptyText }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电开始时间" prop="" align="center" :formatter="startTimeFormat"></el-table-column>
-        <el-table-column label="充电结束时间" prop="" align="center" :formatter="endTimeFormat"></el-table-column>
-        <el-table-column label="结束原因" prop="" align="center">
+        <el-table-column label="充电开始时间" prop="begin_time" align="center" :formatter="startTimeFormat"></el-table-column>
+        <el-table-column label="充电结束时间" prop="end_time" align="center" :formatter="endTimeFormat"></el-table-column>
+        <el-table-column label="结束原因" prop="stop_reason" align="center">
           <template slot-scope="scope">
-            <span> {{ | fmtEmptyText }} </span>
+            <span> {{ scope.row.stop_reason | fmtEmptyText }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="订单状态" prop="" align="center">
+        <el-table-column label="订单状态" prop="bill_type" align="center">
           <template slot-scope="scope">
-            <span> {{ | fmtEmptyText }} </span>
+            <span> {{ scope.row.bill_status | fmtEmptyText }} </span>
           </template>
         </el-table-column>
       </el-table>
@@ -95,18 +96,18 @@
 </template>
 
 <script>
-import { convertDate } from '../common';
 import { queryOrderList } from '../service';
 import dayjs from 'dayjs';
 
 export default {
   data () {
     return {
-      addr: '11010111194',
-      no: '',
+      addr: '98879855', // 地址
+      no: '', // 订单编号
       begin_time: '',
       end_time: '',
-      tableData: []
+      tableData: [],
+      tableLoading: false
     }
   },
   filters: {
@@ -118,38 +119,54 @@ export default {
     }
   },
   created() {
-    this.begin_time = dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss');
-    this.end_time = dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss');
     this.queryOrderList();
   },
   methods: {
+    // 时间格式化
     startTimeFormat(row) {
-      if(row.start_time) {
-        return convertDate(row.start_time, 'yyyy-MM-dd hh:mm:ss');
+      if(row.begin_time) {
+        return dayjs(row.begin_time).format('YYYY-MM-DD hh:mm:ss');
       } else {
         return '--';
       }
     },
     endTimeFormat(row) {
       if(row.end_time) {
-        return convertDate(row.end_time, 'yyyy-MM-dd hh:mm:ss');
+        return dayjs(row.end_time).format('YYYY-MM-DD hh:mm:ss');
       } else {
         return '--';
       }
     },
     // 查询订单列表
     async queryOrderList() {
-      const params = {
+      let params = {
         // beginTime: this.begin_time,
         // endTime: this.end_time,
         // billCode: this.no,
         terminalAddr: this.addr
       };
+      if(this.begin_time) {
+        params['beginTime'] = this.begin_time;
+      }
+      if(this.end_time) {
+        params['endTime'] = this.end_time;
+      }
+      if(this.no) {
+        params['billCode'] = this.no;
+      }
+      this.tableLoading = true;
       let data = await queryOrderList(params);
-      console.log(data);
+      if(data.code == 1) {
+        this.tableData = data.data;
+        this.tableLoading = false
+      } else {
+        this.$message.error('数据获取失败');
+        this.tableLoading = false;
+      }
     },
-    handleCellClick() {
-      this.$router.push({ name: 'OrderDetail' });
+    // 跳转到详情页
+    handleCellClick(row) {
+      this.$router.push({ name: 'OrderDetail', params: { billCode : row.bill_code } });
     }
   }
 };
@@ -165,5 +182,10 @@ export default {
 
 .order-content {
   margin: 20px 0;
+}
+
+.order_code {
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

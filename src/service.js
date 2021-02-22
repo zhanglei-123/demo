@@ -32,6 +32,18 @@ export function loginRequest (params) {
   return request('/login', 'post', params)
 }
 
+/**
+ * 查询订单列表
+ * @param {*} params 
+ */
 export function queryOrderList(params) {
   return request('/bill/query', 'post', params);
+}
+
+/**
+ * 订单详情
+ * @param {*} params 
+ */
+export function queryOrderDetail(params) {
+  return request('/bill/detail/query', 'post', params);
 }
