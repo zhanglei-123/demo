@@ -4,77 +4,77 @@
       <div class="flex a-c j-s">
         <div>
           <span>订单编号</span>
-          <span> {{ info.billCode | fmtEmptyText}} </span>
+          <span> {{ info.billCode | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
         <div>
           <span>开始充电时电表读数</span>
-          <span> {{ info.beginMeterReading | fmtEmptyText}} </span>
+          <span> {{ info.beginMeterReading | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
       </div>
       <div class="flex a-c j-s">
         <div>
           <span>充电方式</span>
-          <span> {{ info.chargingType | fmtEmptyText}} </span>
+          <span> {{ info.chargingType | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
         <div>
           <span>结束充电时电表读数</span>
-          <span> {{ info.endMeterReading | fmtEmptyText}} </span>
+          <span> {{ info.endMeterReading | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
       </div>
       <div class="flex a-c j-s">
         <div>
           <span>充电电量</span>
-          <span> {{ info.chargingPower | fmtEmptyText}} </span>
+          <span> {{ info.chargingPower | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
         <div>
           <span>订单上传时间</span>
-          <span> {{ info.uploadTime	| fmtEmptyText}} </span>
+          <span> {{ info.uploadTime	| fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
       </div>
       <div class="flex a-c j-s">
         <div>
           <span>充电开始时间</span>
-          <span> {{ info.beginTime | fmtEmptyText}} </span>
+          <span> {{ info.beginTime | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
         <div>
           <span>订单处理状态</span>
-          <span> {{ info.billStatus | fmtEmptyText}} </span>
+          <span> {{ info.billStatus | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
       </div>
       <div class="flex a-c j-s">
         <div>
           <span>充电结束时间</span>
-          <span> {{ info.endTime | fmtEmptyText}} </span>
+          <span> {{ info.endTime | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
         <div>
           <span>VIN号</span>
-          <span> {{ info.vin | fmtEmptyText}} </span>
+          <span> {{ info.vin | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
       </div>
       <div class="flex a-c j-s">
         <div>
           <span>开始充电SOC</span>
-          <span> {{ info.beginSoc | fmtEmptyText}} </span>
+          <span> {{ info.beginSoc | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
         <div>
           <span>充电卡卡号</span>
-          <span> {{ info.cardCode | fmtEmptyText}} </span>
+          <span> {{ info.cardCode | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
       </div>
       <div class="flex a-c j-s">
         <div>
           <span>结束充电SOC</span>
-          <span> {{ info.endSoc | fmtEmptyText}} </span>
+          <span> {{ info.endSoc | fmtEmptyText }} {{ info.errorCheck}} </span>
         </div>
         <div>
           <span>结束原因</span>
-          <span> {{ info.stopReason | fmtEmptyText}} </span>
+          <span> {{ info.stopReason | fmtEmptyText }} {{ info.errorCheck }}</span>
         </div>
       </div>
       <div class="flex a-c j-s">
         <div>
           <span>开始充电时枪数</span>
-          <span> {{ info.beginGunNum | fmtEmptyText}} </span>
+          <span> {{ info.beginGunNum | fmtEmptyText }} {{ info.errorCheck }} </span>
         </div>
       </div>
     </div>
