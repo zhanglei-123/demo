@@ -55,39 +55,39 @@
         </el-table-column>
         <el-table-column label="充电设备地址" prop="terminal_addr" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.terminal_addr | fmtEmptyText}} </span>
+            <span> {{ scope.row.terminal_addr || '--' }} </span>
           </template>
         </el-table-column>
         <el-table-column label="设备类型" prop="terminal_type" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.terminal_type | fmtEmptyText }} </span>
+            <span> {{ devTypeOptions[scope.row.terminal_type] || '--' }} </span>
           </template>
         </el-table-column>
         <el-table-column label="充电枪口号" prop="gun_code" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.gun_code | fmtEmptyText }} </span>
+            <span> {{ scope.row.gun_code || '--' }} </span>
           </template>
         </el-table-column>
         <el-table-column label="充电电量" prop="charging_power" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.charging_power | fmtEmptyText }} </span>
+            <span> {{ scope.row.charging_power || '--'}} </span>
           </template>
         </el-table-column>
         <el-table-column label="启动充电方式" prop="charging_type" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.charging_type | fmtEmptyText }} </span>
+            <span> {{ startTypeOptions[scope.row.charging_type] || '--' }} </span>
           </template>
         </el-table-column>
         <el-table-column label="充电开始时间" prop="begin_time" align="center" :formatter="startTimeFormat"></el-table-column>
         <el-table-column label="充电结束时间" prop="end_time" align="center" :formatter="endTimeFormat"></el-table-column>
         <el-table-column label="结束原因" prop="stop_reason" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.stop_reason | fmtEmptyText }} </span>
+            <span> {{ scope.row.stop_reason || '--' }} </span>
           </template>
         </el-table-column>
         <el-table-column label="订单状态" prop="bill_type" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.bill_status | fmtEmptyText }} </span>
+            <span> {{ scope.row.bill_status || '--' }} </span>
           </template>
         </el-table-column>
       </el-table>
@@ -107,7 +107,19 @@ export default {
       begin_time: '',
       end_time: '',
       tableData: [],
-      tableLoading: false
+      tableLoading: false,
+      devTypeOptions: ['直流', '单相交流', '三相交流'],
+      startTypeOptions: [
+        '未知', 
+        '后台APP启动', 
+        '在线刷卡启动', 
+        '在线VIN启动', 
+        '本地离线卡鉴权启动', 
+        '本地VIN鉴权启动', 
+        '本地离线卡无鉴权启动', 
+        '本地离线VIN无鉴权启动', 
+        '本地按钮、屏幕启动'
+      ],
     }
   },
   filters: {

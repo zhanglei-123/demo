@@ -47,3 +47,11 @@ export function queryOrderList(params) {
 export function queryOrderDetail(params) {
   return request('/bill/detail/query', 'post', params);
 }
+
+/**
+ * 查询设备状态信息
+ * @param {*} params
+ */
+export function queryDevStatus(params) {
+  return request('/devStatus/query', 'post', params);
+}
