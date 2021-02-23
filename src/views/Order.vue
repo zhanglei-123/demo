@@ -1,5 +1,5 @@
 <template>
-  <div class="order-container">
+  <div class="order-container" v-loading="tableLoading">
     <div class="operation-bar">
       <div class="operation-item">
         <span>充电设备地址：</span>
@@ -45,49 +45,48 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        border
-        v-loading="tableLoading">
+        border>
         <el-table-column type="index" label="序号" align="center" width="100px"></el-table-column>
-        <el-table-column label="订单编号" prop="bill_code" align="center">
+        <el-table-column label="订单编号" prop="devBillCode" align="center">
           <template slot-scope="scope">
-            <span @click="handleCellClick(scope.row)" class="order_code"> {{ scope.row.bill_code }} </span>
+            <span @click="handleCellClick(scope.row)" class="order_code"> {{ scope.row.devBillCode }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电设备地址" prop="terminal_addr" align="center">
+        <el-table-column label="充电设备地址" prop="terminalAddr" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.terminal_addr || '--' }} </span>
+            <span> {{ scope.row.terminalAddr || '--' }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="设备类型" prop="terminal_type" align="center">
+        <el-table-column label="设备类型" prop="terminalType" align="center">
           <template slot-scope="scope">
-            <span> {{ devTypeOptions[scope.row.terminal_type] || '--' }} </span>
+            <span> {{ devTypeOptions[scope.row.terminalType - 1] || '--' }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电枪口号" prop="gun_code" align="center">
+        <el-table-column label="充电枪口号" prop="shortCode" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.gun_code || '--' }} </span>
+            <span> {{ scope.row.shortCode || '--' }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电电量" prop="charging_power" align="center">
+        <el-table-column label="充电电量" prop="chargingPower" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.charging_power || '--'}} </span>
+            <span> {{ scope.row.chargingPower || '--'}} </span>
           </template>
         </el-table-column>
-        <el-table-column label="启动充电方式" prop="charging_type" align="center">
+        <el-table-column label="启动充电方式" prop="chargingType" align="center">
           <template slot-scope="scope">
-            <span> {{ startTypeOptions[scope.row.charging_type] || '--' }} </span>
+            <span> {{ startTypeOptions[scope.row.chargingType] || '--' }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电开始时间" prop="begin_time" align="center" :formatter="startTimeFormat"></el-table-column>
-        <el-table-column label="充电结束时间" prop="end_time" align="center" :formatter="endTimeFormat"></el-table-column>
-        <el-table-column label="结束原因" prop="stop_reason" align="center">
+        <el-table-column label="充电开始时间" prop="beginTime" align="center" :formatter="startTimeFormat"></el-table-column>
+        <el-table-column label="充电结束时间" prop="endTime" align="center" :formatter="endTimeFormat"></el-table-column>
+        <el-table-column label="结束原因" prop="stopReason" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.stop_reason || '--' }} </span>
+            <span> {{ scope.row.stopReason || '--' }} </span>
           </template>
         </el-table-column>
         <el-table-column label="订单状态" prop="bill_type" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.bill_status || '--' }} </span>
+            <span> {{ billStatusOptions[scope.row.billStatus] || '--' }} </span>
           </template>
         </el-table-column>
       </el-table>
@@ -102,13 +101,13 @@ import dayjs from 'dayjs';
 export default {
   data () {
     return {
-      addr: '98879855', // 地址
+      addr: '1101011119101', // 地址
       no: '', // 订单编号
-      begin_time: '',
-      end_time: '',
-      tableData: [],
+      begin_time: '', // 开始时间
+      end_time: '', // 结束时间
+      tableData: [], // 数据
       tableLoading: false,
-      devTypeOptions: ['直流', '单相交流', '三相交流'],
+      devTypeOptions: ['直流', '单相交流', '三相交流'], // 设备类型
       startTypeOptions: [
         '未知', 
         '后台APP启动', 
@@ -119,7 +118,8 @@ export default {
         '本地离线卡无鉴权启动', 
         '本地离线VIN无鉴权启动', 
         '本地按钮、屏幕启动'
-      ],
+      ], // 启动方式
+      billStatusOptions: [ '充电中', '订单完成', '订单启动失败', '订单处理失败']
     }
   },
   filters: {
@@ -136,15 +136,15 @@ export default {
   methods: {
     // 时间格式化
     startTimeFormat(row) {
-      if(row.begin_time) {
-        return dayjs(row.begin_time).format('YYYY-MM-DD hh:mm:ss');
+      if(row.beginTime) {
+        return dayjs(row.beginTime).format('YYYY-MM-DD hh:mm:ss');
       } else {
         return '--';
       }
     },
     endTimeFormat(row) {
-      if(row.end_time) {
-        return dayjs(row.end_time).format('YYYY-MM-DD hh:mm:ss');
+      if(row.endTime) {
+        return dayjs(row.endTime).format('YYYY-MM-DD hh:mm:ss');
       } else {
         return '--';
       }
@@ -170,7 +170,7 @@ export default {
       let data = await queryOrderList(params);
       if(data.code == 1) {
         this.tableData = data.data;
-        this.tableLoading = false
+        this.tableLoading = false;
       } else {
         this.$message.error('数据获取失败');
         this.tableLoading = false;
@@ -178,7 +178,7 @@ export default {
     },
     // 跳转到详情页
     handleCellClick(row) {
-      this.$router.push({ name: 'OrderDetail', params: { billCode : row.bill_code } });
+      this.$router.push({ name: 'OrderDetail', params: { devBillCode : row.devBillCode } });
     }
   }
 };

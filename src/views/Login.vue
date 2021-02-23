@@ -30,22 +30,23 @@ import { loginRequest } from '../service';
 export default {
   data() {
     return {
-      checked: false,
-      type: 'password', 
+      checked: false, // 显示密码
+      type: 'password',  
       form: {
         username: '',
         password: ''
-      },
+      }, // 登录表单
       formRules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: "请输入密码", trigger: 'blur' }]
-      }
+      } // 表单校验
     }
   },
   methods: {
     showPassword() {
       this.type =  this.checked ? 'text' : 'password'; // 密码显示隐藏
     },
+    // 登录
     async login(){
       const valid = this.$refs.loginForm.validate();
       if(valid) {

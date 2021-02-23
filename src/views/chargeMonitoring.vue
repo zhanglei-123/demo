@@ -64,9 +64,9 @@
         <el-button size="mini" class="custom-btn" @click="queryDevStatus">查询</el-button>
         <el-button size="mini" class="custom-btn" @click="refresh">刷新</el-button>
       </div>
-      <div class="bottom-warp">
+      <div class="bottom-warp" v-loading="dataLoading">
         <el-scrollbar>
-          <div class="charge-wrapper flex" v-loading="dataLoading">
+          <div class="charge-wrapper flex">
             <div class="charge-info" v-for="item in devList">
               <div>
                 <div class="charge-title">
@@ -196,10 +196,10 @@ import dayjs from 'dayjs';
 export default {
   data() {
     return {
-      addr: '11010111194',
-      gun_number: '',
-      status: '',
-      devType: '1',
+      addr: '11010111194', // 充电设备地址
+      gun_number: '', // 枪口号
+      status: '', // 工作状态
+      devType: '1', // 设备类型
       statusOptions: [
         {
           label: '未知状态',
@@ -233,7 +233,7 @@ export default {
           label: '故障',
           value: '7'
         }
-      ],
+      ], // 状态列表
       devTypeOptions: [
         {
           label: '直流',
@@ -247,10 +247,10 @@ export default {
           label: '三相交流',
           value: '3'
         }
-      ],
+      ], // 类型列表
       btnNameOptions: [ '请插枪', '开始充电', '停止充电', '暂停服务', '检查故障', '恢复充电'],
-      dataLoading: false,
-      devList: [], // 设备列表
+      dataLoading: false, 
+      devList: [], // 数据
     }
   },
   filters: {

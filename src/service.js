@@ -19,7 +19,7 @@ function request (url, method = 'get', data = {}){
         resolve(resp.data);
       }
     }).catch(resp => {
-      reject(resp.data)
+      reject(resp.data);
     })
   })
 }

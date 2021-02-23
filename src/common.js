@@ -1,5 +1,6 @@
 import { MessageBox } from 'element-ui';
 import FileSaver from 'file-saver';
+import dayjs from 'dayjs';
 
 const XLSX = window.XLSX;
 const XLSX2 = window.XLSX2;
@@ -76,4 +77,26 @@ export function exportExcel(el, fileName) {
   FileSaver.saveAs(new Blob([s2ab(wbout)]), {
     type: 'application/octest-stream'
   }, fileName + '.xlsx')
+}
+
+/**
+ * 日期列表生成
+ * @param {*} start 
+ * @param {*} end 
+ * @param {*} interval 
+ * @param {*} format 
+ */
+export function createDateList (interval = 1800, format = 'HH:mm:ss') {
+  let startTime = dayjs().startOf('day');
+  let endTime = dayjs().endOf('day');
+  let result = [];
+  while (startTime.valueOf() <= endTime.valueOf()) {
+    result.push(startTime.format(format));
+    if (Object.prototype.toString.call(interval) === '[object String]' && /\w+/.test(interval)) {
+      startTime = startTime.add(1, interval);
+    } else {
+      startTime = startTime.add(interval, 'second');
+    }
+  }
+  return result;
 }
