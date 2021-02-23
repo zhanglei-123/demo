@@ -46,17 +46,17 @@ const router = new VueRouter({
 })
 
 // 导航守卫
-// router.beforeEach((to, from, next) => {
-//   if(to.path === '/login') {
-//     next();
-//   } else {
-//     let token = Cookies.get('token');
-//     if(token === 'null' || token === '' || token === undefined) {
-//       next('/login');
-//     } else {
-//       next();
-//     }
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if(to.path === '/login') {
+    next();
+  } else {
+    let token = Cookies.get('token');
+    if(token === 'null' || token === '' || token === undefined) {
+      next('/login');
+    } else {
+      next();
+    }
+  }
+})
 
 export default router
