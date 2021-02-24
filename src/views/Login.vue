@@ -31,10 +31,10 @@ export default {
   data() {
     return {
       checked: false, // 显示密码
-      type: 'password',  
+      type: 'password', // input 类型 
       form: {
-        username: '',
-        password: ''
+        username: '', // 用户名
+        password: '' // 密码
       }, // 登录表单
       formRules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -51,8 +51,8 @@ export default {
       const valid = this.$refs.loginForm.validate();
       if(valid) {
         const params = {
-          username: this.form.username,
-          password: this.form.password
+          username: this.form.username, // 用户名
+          password: this.form.password // 密码
         }
         let data = await loginRequest(params);
         if(data.code == 1) {

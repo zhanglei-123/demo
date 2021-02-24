@@ -81,8 +81,6 @@ export function exportExcel(el, fileName) {
 
 /**
  * 日期列表生成
- * @param {*} start 
- * @param {*} end 
  * @param {*} interval 
  * @param {*} format 
  */

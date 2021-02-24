@@ -21,12 +21,15 @@ export default {
     }
   },
   methods: {
+    // 报文查看
     queryMessage(){
       this.$router.push({ name: 'Message' });
     },
+    // 充电桩状态监视
     monitorChargingStatus(){
       this.$router.push({ name: 'ChargeMonitoring' });
     },
+    // 订单查询
     queryOrder(){
       this.$router.push({ name: 'Order' });
     }

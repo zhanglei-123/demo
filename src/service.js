@@ -11,7 +11,7 @@ function request (url, method = 'get', data = {}){
     data: data,
     headers: {
       'token': Cookies.get('token') || undefined,
-    }
+    } // 请求头加token
   };
   return new Promise((resolve, reject) => {
     axios(options).then(resp => {
@@ -34,7 +34,7 @@ export function loginRequest (params) {
 
 /**
  * 查询订单列表
- * @param {*} params 
+ * @param {*} params beginTime endTime billCode terminalAddr 
  */
 export function queryOrderList(params) {
   return request('/bill/query', 'post', params);
@@ -50,7 +50,7 @@ export function queryOrderDetail(params) {
 
 /**
  * 查询设备状态信息
- * @param {*} params
+ * @param {*} params ctrlAddr devType gunCode workStatus
  */
 export function queryDevStatus(params) {
   return request('/devStatus/query', 'post', params);
@@ -58,7 +58,7 @@ export function queryDevStatus(params) {
 
 /**
  * 充电控制
- * @param {*} params 
+ * @param {*} params ctrlAddr devType gunCode operationType
  */
 export function ctrlCharge(params) {
   return request('/charge/ctrl', 'post', params);

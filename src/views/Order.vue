@@ -148,7 +148,7 @@ export default {
         this.tableLoading = false;
       }
     },
-    // 跳转到详情页
+    // 跳转到订单详情页
     handleCellClick(row) {
       this.$router.push({ name: 'OrderDetail', params: { devBillCode : row.devBillCode } });
     }

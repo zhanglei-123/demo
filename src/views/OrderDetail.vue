@@ -84,8 +84,8 @@
         :data="powerList" 
         style="width: 100%" border
         :span-method="spanMethod">
-        <el-table-column prop="time" label="时段" align="center" width="600"></el-table-column>
-        <el-table-column prop="power" label="电量" align="center" width="640"></el-table-column>
+        <el-table-column prop="time" label="时段" align="center" width="800"></el-table-column>
+        <el-table-column prop="power" label="电量" align="center" width="840"></el-table-column>
         <el-table-column align="right">
           <template slot="header" slot-scope="scope">
             <i :class="[ isCollapse ? 'el-icon-arrow-down': 'el-icon-arrow-right']" 
@@ -111,7 +111,7 @@
 
 <script>
 import { queryOrderDetail } from '../service';
-import { createDateList } from '../common';
+import { createDateList, create } from '../common';
 import dayjs from 'dayjs';
 
 export default {
@@ -219,7 +219,7 @@ export default {
 .detail-container {
   width: 100%;
   height: 100%;
-  padding: 10px 300px;
+  padding: 10px 50px;
   box-sizing: border-box;
 
   .top {
@@ -244,8 +244,10 @@ export default {
   }
 
   .bottom {
-    margin-top: 40px;
+    margin-top: 20px;
     display: flex;
+    width: 100%;
+    height: 450px;
   }
 }
 
@@ -255,14 +257,10 @@ export default {
 }
 
 .bottom-info {
-  width: 800px;
-  height: 500px;
+  width: 990px;
+  height: 100%;
   padding: 10px;
   box-sizing: border-box;
-
-  & > div {
-    margin: 10px 0;
-  }
 }
 
 .el-table {
