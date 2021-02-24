@@ -55,3 +55,11 @@ export function queryOrderDetail(params) {
 export function queryDevStatus(params) {
   return request('/devStatus/query', 'post', params);
 }
+
+/**
+ * 充电控制
+ * @param {*} params 
+ */
+export function ctrlCharge(params) {
+  return request('/charge/ctrl', 'post', params);
+}

@@ -61,7 +61,7 @@
             </el-option>
           </el-select>
         </div>
-        <el-button size="mini" class="custom-btn" @click="queryDevStatus">查询</el-button>
+        <el-button size="mini" class="custom-btn" @click="query">查询</el-button>
         <el-button size="mini" class="custom-btn" @click="refresh">刷新</el-button>
       </div>
       <div class="bottom-warp" v-loading="dataLoading">
@@ -180,7 +180,9 @@
                   </div>
                 </div>
               </div>
-              <div class="charge-btn" @click="handleBtnClick()"> {{ btnNameOptions[item.devStatus] }} </div>
+              <div class="charge-btn" @click="handleBtnClick(item, btnNameOptions[item.devStatus])"> 
+                {{ btnNameOptions[item.devStatus] }} 
+              </div>
             </div>
           </div>
         </el-scrollbar>
@@ -190,7 +192,8 @@
 </template>
 
 <script>
-import { queryDevStatus } from '../service';
+import { queryDevStatus, ctrlCharge } from '../service';
+import { confirm } from '../common';
 import dayjs from 'dayjs';
 
 export default {
@@ -200,6 +203,8 @@ export default {
       gun_number: '', // 枪口号
       status: '', // 工作状态
       devType: '1', // 设备类型
+      dataLoading: false, 
+      devList: [], // 数据
       statusOptions: [
         {
           label: '未知状态',
@@ -248,9 +253,17 @@ export default {
           value: '3'
         }
       ], // 类型列表
-      btnNameOptions: [ '请插枪', '开始充电', '停止充电', '暂停服务', '检查故障', '恢复充电'],
-      dataLoading: false, 
-      devList: [], // 数据
+      btnNameOptions: ['未知状态', '请插枪', '开始充电', '恢复充电', '停止充电', '请拔枪', '暂停服务', '检查故障'],
+      operationTypeOptions: [
+        {
+          label: '开始充电',
+          value: 1
+        },
+        {
+          label: '停止充电',
+          value: 2
+        }
+      ]
     }
   },
   filters: {
@@ -274,9 +287,32 @@ export default {
   },
   methods: {
     // 查询
+    query() {
+      this.queryDevStatus();
+      // 每隔5秒重新刷新页面
+      this.timer = setInterval(async () => {
+        const params = {
+          ctrlAddr: this.addr, 
+          devType: this.devType,
+          gunCode: this.gun_number || "0",
+          workStatus: this.status || "0"
+        }
+        let data = await queryDevStatus(params);
+        if(data.code == 1) {
+          this.devList = data.data;
+        } else {
+          this.$message.error('获取数据失败');
+        }
+      }, 5000)
+    },
+    // 刷新
+    refresh() {
+      this.queryDevStatus();
+    },
+    // 查询设备状态
     async queryDevStatus() {
       let params = {
-        ctrlAddr: this.addr,
+        ctrlAddr: this.addr, 
         devType: this.devType,
         gunCode: this.gun_number || "0",
         workStatus: this.status || "0"
@@ -291,28 +327,38 @@ export default {
         this.dataLoading = false;
       }
     },
-    // 刷新
-    refresh() {
-      this.queryDevStatus();
+    // 充电控制
+    async ctrlCharge(item, btnName) {
+      console.log(item)
+      const rs = this.operationTypeOptions.find(v => v.label == btnName);
+      let params = {
+        ctrlAddr: item.ctrlAddr, // 充电设备地址
+        devType: item.devType, // 充电设备类型
+        gunCode: item.gunCode, // 充电枪口号
+        billCode: item.billCode, // 订单号 
+        operationType: '', // 操作类型
+        chargeType: 0, // 启动充电类型
+      }
+      if(rs) {
+        params.operationType = rs.value; 
+      }
+      await confirm(`确认${btnName}吗？`);
+      let data = await ctrlCharge(params);
+      if (data.code == 1) {
+        this.$message.success(`${btnName}成功`);
+        this.queryDevStatus();
+      } else {
+        this.$message.error(`${btnName}失败`);
+      }
     },
     // 按钮点击事件
-    handleBtnClick(btnName) {
-      switch(btnName){
-        case '':
-          break;
-        case '':
-          break;
-        case '':
-          break;
-        case '':
-          break;
-        case '':
-          break;
-        case '':
-          break;
-      }
+    handleBtnClick(item, btnName) {
+      this.ctrlCharge(item, btnName);
     }
   },
+  beforeDestroy() {
+    clearInterval(this.timer);
+  }
 };
 </script>
 

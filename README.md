@@ -1,4 +1,4 @@
-# qcscan
+# demo
 
 ## Project setup
 ```

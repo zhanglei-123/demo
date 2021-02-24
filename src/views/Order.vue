@@ -42,10 +42,7 @@
       <el-button type="primary" size="mini" class="custom-btn" @click="queryOrderList">查询</el-button>
     </div>
     <div class="order-content">
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-        border>
+      <el-table :data="tableData" style="width: 100%" border>
         <el-table-column type="index" label="序号" align="center" width="100px"></el-table-column>
         <el-table-column label="订单编号" prop="devBillCode" align="center">
           <template slot-scope="scope">
@@ -64,7 +61,7 @@
         </el-table-column>
         <el-table-column label="充电枪口号" prop="shortCode" align="center">
           <template slot-scope="scope">
-            <span> {{ scope.row.shortCode || '--' }} </span>
+            <span> {{ scope.row.shortCode + '号枪口' || '--' }} </span>
           </template>
         </el-table-column>
         <el-table-column label="充电电量" prop="chargingPower" align="center">
@@ -77,8 +74,16 @@
             <span> {{ startTypeOptions[scope.row.chargingType] || '--' }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="充电开始时间" prop="beginTime" align="center" :formatter="startTimeFormat"></el-table-column>
-        <el-table-column label="充电结束时间" prop="endTime" align="center" :formatter="endTimeFormat"></el-table-column>
+        <el-table-column label="充电开始时间" prop="beginTime" align="center">
+          <template slot-scope="scope">
+            <span> {{ scope.row.beginTime || '--' }} </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="充电结束时间" prop="endTime" align="center">
+          <template slot-scope="scope">
+            <span> {{ scope.row.endTime || '--' }} </span>
+          </template>
+        </el-table-column>
         <el-table-column label="结束原因" prop="stopReason" align="center">
           <template slot-scope="scope">
             <span> {{ scope.row.stopReason || '--' }} </span>
@@ -96,7 +101,6 @@
 
 <script>
 import { queryOrderList } from '../service';
-import dayjs from 'dayjs';
 
 export default {
   data () {
@@ -119,53 +123,21 @@ export default {
         '本地离线VIN无鉴权启动', 
         '本地按钮、屏幕启动'
       ], // 启动方式
-      billStatusOptions: [ '充电中', '订单完成', '订单启动失败', '订单处理失败']
-    }
-  },
-  filters: {
-    fmtEmptyText: function(val) {
-      if(!val) {
-        return '--';
-      }
-      return val;
+      billStatusOptions: [ '充电中', '订单完成', '订单启动失败', '订单处理失败'] // 订单状态
     }
   },
   created() {
     this.queryOrderList();
   },
   methods: {
-    // 时间格式化
-    startTimeFormat(row) {
-      if(row.beginTime) {
-        return dayjs(row.beginTime).format('YYYY-MM-DD hh:mm:ss');
-      } else {
-        return '--';
-      }
-    },
-    endTimeFormat(row) {
-      if(row.endTime) {
-        return dayjs(row.endTime).format('YYYY-MM-DD hh:mm:ss');
-      } else {
-        return '--';
-      }
-    },
     // 查询订单列表
     async queryOrderList() {
       let params = {
-        // beginTime: this.begin_time,
-        // endTime: this.end_time,
-        // billCode: this.no,
-        terminalAddr: this.addr
+        beginTime: this.begin_time, // 开始时间
+        endTime: this.end_time, // 结束时间
+        billCode: this.no, // 订单号
+        terminalAddr: this.addr // 充电终端地址
       };
-      if(this.begin_time) {
-        params['beginTime'] = this.begin_time;
-      }
-      if(this.end_time) {
-        params['endTime'] = this.end_time;
-      }
-      if(this.no) {
-        params['billCode'] = this.no;
-      }
       this.tableLoading = true;
       let data = await queryOrderList(params);
       if(data.code == 1) {

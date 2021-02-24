@@ -5,51 +5,51 @@
         <div class="flex a-c j-s">
           <div>
             <span>订单编号</span>
-            <span> {{ info.devBillCode | fmtEmptyText }} </span>
+            <span> {{ info.devBillCode || '--' }} </span>
           </div>
           <div>
             <span>开始充电时电表读数</span>
-            <span> {{ info.beginMeterReading | fmtEmptyText }} </span>
+            <span> {{ info.beginMeterReading || '--' }} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电方式</span>
-            <span> {{ chargingTypeOptions[info.chargingType] | fmtEmptyText }} </span>
+            <span> {{ chargingTypeOptions[info.chargingType] || '--'}} </span>
           </div>
           <div>
             <span>结束充电时电表读数</span>
-            <span> {{ info.endMeterReading | fmtEmptyText }} </span>
+            <span> {{ info.endMeterReading || '--'}} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电电量</span>
-            <span> {{ info.chargingPower | fmtEmptyText }} </span>
+            <span> {{ info.chargingPower || '--'}} </span>
           </div>
           <div>
             <span>订单上传时间</span>
-            <span> {{ info.uploadTime	| fmtEmptyText }} </span>
+            <span> {{ info.uploadTimet || '--' }} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电开始时间</span>
-            <span> {{ info.beginTime | fmtEmptyText }} </span>
+            <span> {{ info.beginTime || '--'}} </span>
           </div>
           <div>
             <span>订单处理状态</span>
-            <span> {{ billStatusOptions[info.billStatus] | fmtEmptyText }} </span>
+            <span> {{ billStatusOptions[info.billStatus] || '--'}} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电结束时间</span>
-            <span> {{ info.endTime | fmtEmptyText }} </span>
+            <span> {{ info.endTime || '--' }} </span>
           </div>
           <div>
             <span>VIN号</span>
-            <span> {{ info.vin | fmtEmptyText }} </span>
+            <span> {{ info.vin || '--' }} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
@@ -59,7 +59,7 @@
           </div>
           <div>
             <span>充电卡卡号</span>
-            <span> {{ info.cardCode | fmtEmptyText }} </span>
+            <span> {{ info.cardCode || '--' }} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
@@ -69,22 +69,29 @@
           </div>
           <div>
             <span>结束原因</span>
-            <span> {{ info.stopReason | fmtEmptyText }} </span>
+            <span> {{ info.stopReason || '--' }} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>开始充电时枪数</span>
-            <span> {{ info.beginGunNum | fmtEmptyText }} </span>
+            <span> {{ info.beginGunNum || '--' }} </span>
           </div>
         </div>
       </div>
-      <el-table :class=" {'custom-table': isCollapse }" :data="powerList" style="width: 100%">
+      <el-table 
+        :class=" {'custom-table': isCollapse }" 
+        :data="powerList" 
+        style="width: 100%" border
+        :span-method="spanMethod">
         <el-table-column prop="time" label="时段" align="center" width="600"></el-table-column>
-        <el-table-column prop="power" label="电量" align="center" width="600"></el-table-column>
+        <el-table-column prop="power" label="电量" align="center" width="640"></el-table-column>
         <el-table-column align="right">
           <template slot="header" slot-scope="scope">
-            <i :class="[ isCollapse ? 'el-icon-arrow-down': 'el-icon-arrow-right']" style="font-size: 20px; cursor: pointer;" @click="unfold"></i>
+            <i :class="[ isCollapse ? 'el-icon-arrow-down': 'el-icon-arrow-right']" 
+              style="font-size: 20px; cursor: pointer;" 
+              @click="unfold">
+            </i>
           </template>
         </el-table-column>
       </el-table>
@@ -113,6 +120,8 @@ export default {
       info: {}, // 订单详情
       loading: false, 
       isCollapse: false, // 展开折叠
+      powerList: [], //电量
+      originalMessage: [], // 报文
       chargingTypeOptions: [
         '未知',
         '后台APP启动',
@@ -126,17 +135,6 @@ export default {
       ], // 充电方式
       billStatusOptions: [ '充电中', '订单完成', '订单启动失败', '订单处理失败' ], // 订单状态
       devTypeOptions: ['直流', '单相交流', '三相交流'], // 设备类型
-      powerList: [], //电量
-      originalMessage: [], // 报文
-    }
-  },
-  filters: {
-    fmtEmptyText: function(val) {
-      if(val || val == 0) {
-        return val;
-      } else {
-        return '--';
-      }
     }
   },
   created() {
@@ -146,12 +144,12 @@ export default {
     // 查询订单详情
     async queryOrderDetail() {
       const params = {
-        billCode: this.$route.params.devBillCode
+        billCode: this.$route.params.devBillCode // 订单编号
       };
       this.loading = true;
       let data = await queryOrderDetail(params);
       if(data.code == 1) {
-        this.info = data.data || {};
+        this.info = data.data || {}; 
         this.originalMessage = this.processOriginMessage(data.data.originalMessage); // 报文
         this.powerSegment = data.data.powerSegment.substr(0, data.data.powerSegment.length - 1).split(','); // 数据
         let params = [];
@@ -204,6 +202,14 @@ export default {
     // 展开折叠
     unfold() {
       this.isCollapse = !this.isCollapse;
+    },
+    spanMethod({ row, column, rowIndex, columnIndex }) {
+      if(columnIndex == 1) {
+        return {
+          rowspan: 1,
+          colspan: 2
+        }
+      }
     }
   },
 };
