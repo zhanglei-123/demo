@@ -6,76 +6,91 @@
           <div>
             <span>订单编号</span>
             <span> {{ info.devBillCode || '--' }} </span>
+            <span class="error-check"></span>
           </div>
           <div>
             <span>开始充电时电表读数</span>
             <span> {{ info.beginMeterReading || '--' }} </span>
+            <span class="error-check"> {{ errorCheck.begin_meter_reading }} </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电方式</span>
             <span> {{ chargingTypeOptions[info.chargingType] || '--'}} </span>
+            <span class="error-check"></span>
           </div>
           <div>
             <span>结束充电时电表读数</span>
             <span> {{ info.endMeterReading || '--'}} </span>
+            <span class="error-check"> {{ errorCheck.begin_meter_reading }}</span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电电量</span>
             <span> {{ info.chargingPower || '--'}} </span>
+            <span class="error-check"></span>
           </div>
           <div>
             <span>订单上传时间</span>
             <span> {{ info.uploadTimet || '--' }} </span>
+            <span class="error-check"></span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电开始时间</span>
             <span> {{ info.beginTime || '--'}} </span>
+            <span class="error-check"></span>
           </div>
           <div>
             <span>订单处理状态</span>
             <span> {{ billStatusOptions[info.billStatus] || '--'}} </span>
+            <span class="error-check"></span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电结束时间</span>
             <span> {{ info.endTime || '--' }} </span>
+            <span class="error-check"></span>
           </div>
           <div>
             <span>VIN号</span>
             <span> {{ info.vin || '--' }} </span>
+            <span class="error-check"></span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>开始充电SOC</span>
             <span> {{ info.beginSoc + '%' || '--' }} </span>
+            <span class="error-check"></span>
           </div>
           <div>
             <span>充电卡卡号</span>
             <span> {{ info.cardCode || '--' }} </span>
+            <span class="error-check"></span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>结束充电SOC</span>
             <span> {{ info.endSoc + '%' || '--' }} </span>
+            <span class="error-check"></span>
           </div>
           <div>
             <span>结束原因</span>
             <span> {{ info.stopReason || '--' }} </span>
+            <span class="error-check"></span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>开始充电时枪数</span>
             <span> {{ info.beginGunNum || '--' }} </span>
+            <span class="error-check"></span>
           </div>
         </div>
       </div>
@@ -122,6 +137,7 @@ export default {
       isCollapse: false, // 展开折叠
       powerList: [], //电量
       originalMessage: [], // 报文
+      errorCheck: {}, // 错误校验
       chargingTypeOptions: [
         '未知',
         '后台APP启动',
@@ -150,6 +166,7 @@ export default {
       let data = await queryOrderDetail(params);
       if(data.code == 1) {
         this.info = data.data || {}; 
+        this.errorCheck = JSON.parse(data.data.errorCheck); // 错误校验
         this.originalMessage = this.processOriginMessage(data.data.originalMessage); // 报文
         this.powerSegment = data.data.powerSegment.substr(0, data.data.powerSegment.length - 1).split(','); // 数据
         let params = [];
@@ -261,6 +278,11 @@ export default {
   height: 100%;
   padding: 10px;
   box-sizing: border-box;
+}
+
+.error-check {
+  font-size: 12px;
+  color: red;
 }
 
 .el-table {
