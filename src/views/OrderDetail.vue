@@ -204,7 +204,7 @@ export default {
     processOriginMessage(v){
       let message = Object.entries(JSON.parse(v));
       message.map(item => {
-        if (item[0] == '启动方式') {
+        if (item[0] == '启动方式' || item[0] == '启动充电类型') {
           item[1] = this.chargingTypeOptions[item[1]];
         } else if (item[0] == '充电枪类型') {
           item[1] = this.devTypeOptions[item[1] - 1];
@@ -212,7 +212,7 @@ export default {
           item[1] = item[1] ? dayjs(item[1]).format('YYYY-MM-DD hh:mm:ss') : '--';
         } else {
           item[1] ? item[1] : '--';
-        }
+        } 
       })
       return message;
     },
