@@ -2,16 +2,16 @@ import axios from 'axios';
 
 const BASEURL = '/api';
 
-function request (url, method = 'get', data = {}){
+function request (url, data = {}, method = 'post') {
   let options = {
-    url, 
-    method,
+    url: url,
+    method: method,
     baseURL: BASEURL,
-    params: method === 'get' ? data : {},
+    params: method === 'get' ? data: {},
     data: data,
     headers: {
-      'token': Cookies.get('token') || undefined,
-    } // 请求头加token
+      'token': Cookies.get('token') || undefined
+    }
   };
   return new Promise((resolve, reject) => {
     axios(options).then(resp => {
@@ -28,8 +28,8 @@ function request (url, method = 'get', data = {}){
  * 登录
  * @param {*} params 
  */
-export function loginRequest (params) {
-  return request('/login', 'post', params)
+export function loginRequest(params) {
+  return request('/login', params)
 }
 
 /**
@@ -37,7 +37,7 @@ export function loginRequest (params) {
  * @param {*} params beginTime endTime billCode terminalAddr 
  */
 export function queryOrderList(params) {
-  return request('/bill/query', 'post', params);
+  return request('/bill/query', params);
 }
 
 /**
@@ -45,7 +45,7 @@ export function queryOrderList(params) {
  * @param {*} params 
  */
 export function queryOrderDetail(params) {
-  return request('/bill/detail/query', 'post', params);
+  return request('/bill/detail/query', params);
 }
 
 /**
@@ -53,7 +53,7 @@ export function queryOrderDetail(params) {
  * @param {*} params ctrlAddr devType gunCode workStatus
  */
 export function queryDevStatus(params) {
-  return request('/devStatus/query', 'post', params);
+  return request('/devStatus/query', params);
 }
 
 /**
@@ -61,5 +61,5 @@ export function queryDevStatus(params) {
  * @param {*} params ctrlAddr devType gunCode operationType
  */
 export function ctrlCharge(params) {
-  return request('/charge/ctrl', 'post', params);
+  return request('/charge/ctrl', params);
 }
