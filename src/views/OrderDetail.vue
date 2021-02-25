@@ -6,91 +6,121 @@
           <div>
             <span>订单编号</span>
             <span> {{ info.devBillCode || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.devBillCode"></tooltip>
+            </span>
           </div>
           <div>
             <span>开始充电时电表读数</span>
             <span> {{ info.beginMeterReading || '--' }} </span>
-            <span class="error-check"> {{ errorCheck.begin_meter_reading }} </span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.beginMeterReading"></tooltip>
+            </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电方式</span>
             <span> {{ chargingTypeOptions[info.chargingType] || '--'}} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.chargingType"></tooltip>
+            </span>
           </div>
           <div>
             <span>结束充电时电表读数</span>
             <span> {{ info.endMeterReading || '--'}} </span>
-            <span class="error-check"> {{ errorCheck.begin_meter_reading }}</span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.endMeterReading"></tooltip>
+            </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电电量</span>
             <span> {{ info.chargingPower || '--'}} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.chargingPower"></tooltip>
+            </span>
           </div>
           <div>
             <span>订单上传时间</span>
-            <span> {{ info.uploadTimet || '--' }} </span>
-            <span class="error-check"></span>
+            <span> {{ info.uploadTime || '--' }} </span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.uploadTime"></tooltip>
+            </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电开始时间</span>
             <span> {{ info.beginTime || '--'}} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.beginTime"></tooltip>
+            </span>
           </div>
           <div>
             <span>订单处理状态</span>
-            <span> {{ billStatusOptions[info.billStatus] || '--'}} </span>
-            <span class="error-check"></span>
+            <span> {{ billStatusOptions[info.billStatus - 1] || '--'}} </span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.billStatus"></tooltip>
+            </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>充电结束时间</span>
             <span> {{ info.endTime || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.endTime"></tooltip>
+            </span>
           </div>
           <div>
             <span>VIN号</span>
             <span> {{ info.vin || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.vin"></tooltip>
+            </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>开始充电SOC</span>
             <span> {{ info.beginSoc + '%' || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.beginSoc"></tooltip>
+            </span>
           </div>
           <div>
             <span>充电卡卡号</span>
             <span> {{ info.cardCode || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.cardCode"></tooltip>
+            </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>结束充电SOC</span>
             <span> {{ info.endSoc + '%' || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.endSoc"></tooltip>
+            </span>
           </div>
           <div>
             <span>结束原因</span>
             <span> {{ info.stopReason || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.stopReason"></tooltip>
+            </span>
           </div>
         </div>
         <div class="flex a-c j-s">
           <div>
             <span>开始充电时枪数</span>
             <span> {{ info.beginGunNum || '--' }} </span>
-            <span class="error-check"></span>
+            <span class="error-check">
+              <tooltip :content="errorCheck.beginGunNum"></tooltip>
+            </span>
           </div>
         </div>
       </div>
@@ -127,6 +157,7 @@
 <script>
 import { queryOrderDetail } from '../service';
 import { createDateList, create } from '../common';
+import tooltip from '../components/tooltip';
 import dayjs from 'dayjs';
 
 export default {
@@ -152,6 +183,9 @@ export default {
       billStatusOptions: [ '充电中', '订单完成', '订单启动失败', '订单处理失败' ], // 订单状态
       devTypeOptions: ['直流', '单相交流', '三相交流'], // 设备类型
     }
+  },
+  components: {
+    tooltip
   },
   created() {
     this.queryOrderDetail();
@@ -274,15 +308,16 @@ export default {
 }
 
 .bottom-info {
-  width: 990px;
+  width: 1115px;
   height: 100%;
   padding: 10px;
   box-sizing: border-box;
 }
 
 .error-check {
-  font-size: 12px;
+  font-size: 20px;
   color: red;
+  text-align: left!important;
 }
 
 .el-table {

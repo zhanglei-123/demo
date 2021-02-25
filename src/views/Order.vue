@@ -91,7 +91,7 @@
         </el-table-column>
         <el-table-column label="订单状态" prop="bill_type" align="center">
           <template slot-scope="scope">
-            <span> {{ billStatusOptions[scope.row.billStatus] || '--' }} </span>
+            <span> {{ billStatusOptions[scope.row.billStatus - 1] || '--' }} </span>
           </template>
         </el-table-column>
       </el-table>

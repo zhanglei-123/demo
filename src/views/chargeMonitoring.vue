@@ -180,9 +180,12 @@
                   </div>
                 </div>
               </div>
-              <div class="charge-btn" @click="handleBtnClick(item, btnNameOptions[item.devStatus])"> 
+              <el-button 
+                class="charge-btn" plain
+                @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
+                :disabled="!([2, 4].includes(item.devStatus))"> 
                 {{ btnNameOptions[item.devStatus] }} 
-              </div>
+              </el-button>
             </div>
           </div>
         </el-scrollbar>
@@ -263,7 +266,8 @@ export default {
           label: '停止充电',
           value: 2
         }
-      ]
+      ],
+      btnDisabled: true
     }
   },
   filters: {
@@ -418,10 +422,10 @@ export default {
 }
 
 .charge-btn {
+  width: 100%;
   text-align: center;
+  color: #000;
   border: 1px solid #000;
-  padding: 7px 0;
-  box-sizing: border-box;
   cursor: pointer;
 }
 </style>
