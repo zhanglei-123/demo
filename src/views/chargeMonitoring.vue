@@ -61,13 +61,29 @@
             </el-option>
           </el-select>
         </div>
-        <el-button size="mini" class="custom-btn" @click="queryDevStatus">查询</el-button>
-        <el-button size="mini" class="custom-btn" @click="refresh">刷新</el-button>
+        <el-button 
+          size="mini" 
+          class="custom-btn" 
+          @click="queryDevStatus">
+          查询
+        </el-button>
+        <el-button 
+          size="mini" 
+          class="custom-btn" 
+          @click="refresh">
+          刷新
+        </el-button>
       </div>
       <div class="bottom-warp" v-loading="dataLoading">
         <el-scrollbar>
           <div class="charge-wrapper flex">
-            <div class="charge-info" v-for="item in devList">
+            <div class="charge-info" 
+               v-for="item in devList"
+               :key="item.gunCode" 
+               v-loading="startLoading[item.gunCode]" 
+               :element-loading-text="loadingText"
+               element-loading-spinner="el-icon-loading"
+               element-loading-background="rgba(0, 0, 0, 0.8)">
               <div>
                 <div class="charge-title">
                   <span class="status-color"></span>
@@ -267,7 +283,8 @@ export default {
           value: 2
         }
       ],
-      btnDisabled: true
+      startLoading: {},
+      loadingText: ''
     }
   },
   filters: {
@@ -325,14 +342,23 @@ export default {
       }
       if(rs) {
         params.operationType = rs.value; 
+        this.loadingText = ['正在开启...', '正在结束...'][rs.value - 1];
       }
-      confirm(`确认${btnName}吗？`).then(async () => {
-        let data = await ctrlCharge(params);
-        if (data.code == 1) {
-          this.$message.success('操作成功');
-          this.queryDevStatus();
+      confirm(`确认${btnName}吗？`).then(() => {
+        this.$set(this.startLoading, item.gunCode, true);
+        if(this.timer) {
+          clearTimeout(this.timer);
         } else {
-          this.$message.error('操作失败');
+          this.timer = setTimeout(async () => {
+            let data = await ctrlCharge(params);
+            this.$set(this.startLoading, item.gunCode, false);
+            if(data.code == 1) {
+              this.$message.success('操作成功');
+              this.queryDevStatus();
+            } else {
+              this.$message.error('操作失败')
+            }
+          }, 5000)
         }
       }).catch(() => {
         this.$message.info(`已取消该操作`);
@@ -343,6 +369,9 @@ export default {
       this.ctrlCharge(item, btnName);
     }
   },
+  destroyed() {
+    clearTimeout(this.timer);
+  }
 };
 </script>
 

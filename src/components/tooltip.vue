@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-tooltip 
+      v-if="content"
       class="item"
       effect="dark"
       :content="content"
