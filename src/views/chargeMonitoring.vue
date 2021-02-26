@@ -95,13 +95,12 @@
                     <span> {{ item.gunCode || '--' }} </span>
                   </div>
                 </div>
-                <div class="item-block">
+                <div class="item-block divider-line">
                   <div class="item-miniblock">
                     <span> 充电枪类型：</span>
                     <span> {{ devTypeOptions[item.devType - 1].label || '--' }} </span>
                   </div>
                 </div>
-                <el-divider></el-divider>
                 <div class="item-block">
                   <div class="item-miniblock">
                     <span> 当前SOC：</span>
@@ -132,7 +131,7 @@
                     <span> {{ item.auxiliaryType | fmtAuxiliaryType}} </span>
                   </div>
                 </div>
-                <div class="item-block">
+                <div class="item-block divider-line">
                   <div class="item-miniblock">
                     <span> 电压：</span>
                     <span> {{ item.currentV + 'V' || '--' }} </span>
@@ -142,7 +141,6 @@
                     <span> {{ item.billCode || '--' }} </span>
                   </div>
                 </div>
-                <el-divider></el-divider>
                 <div class="item-block">
                   <div class="item-miniblock">
                     <span> 开始充电时间：</span>
@@ -153,13 +151,12 @@
                     <span> {{ item.remainTime + 'min' || '--' }} </span>
                   </div>
                 </div>
-                <div class="item-block">
+                <div class="item-block divider-line">
                   <div class="item-miniblock">
                     <span> 当前电表读数：</span>
                     <span> {{ item.currentMeterKwh + 'kwh' || '--' }} </span>
                   </div>
                 </div>
-                <el-divider></el-divider>
                 <div class="item-block">
                   <div class="item-miniblock">
                     <span> 当前功率：</span>
@@ -412,26 +409,20 @@ export default {
 .charge-info {
   width: 360px;
   margin: 10px;
+  font-size: 13px;
 
-  & > div:not(.charge-btn) {
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
-    box-sizing: border-box;
-    font-size: 13px;
-
-    .status-color {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      background: green;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
+  .status-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: green;
+    vertical-align: middle;
+    margin-right: 10px;
   }
 }
 
 .charge-title {
-  font-size: 16px;
+  font-size: 18px;
   margin: 10px 0;
   font-weight: bold;
 }
@@ -454,4 +445,9 @@ export default {
   justify-content: space-between;
 }
 
+.item-block.divider-line {
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
 </style>
