@@ -77,132 +77,129 @@
       <div class="bottom-warp" v-loading="dataLoading">
         <el-scrollbar>
           <div class="charge-wrapper flex">
-            <div class="charge-info" 
-               v-for="item in devList"
-               :key="item.gunCode" 
-               v-loading="startLoading[item.gunCode]" 
-               :element-loading-text="loadingText"
-               element-loading-spinner="el-icon-loading"
-               element-loading-background="rgba(0, 0, 0, 0.8)">
-              <div>
-                <div class="charge-title">
-                  <span class="status-color"></span>
-                  <span>{{ statusOptions[item.devStatus].label || '--' }}</span>
-                </div>
-                <div class="status-line">
-                  <div>
-                    <div>
-                      <span>充电枪口号：</span>
-                      <span> {{ item.gunCode || '--' }} </span>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                    <span>充电枪类型：</span>
-                    <span> {{ devTypeOptions[item.devType - 1].label || '--' }} </span>
-                    </div>
-                  </div>
-                </div>
+            <el-card 
+              class="charge-info" shadow="always"
+              v-for="item in devList" :key="item.gunCode"
+              v-loading="startLoading[item.gunCode]"
+              :element-loading-text="loadingText"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0,0,0,0.8)">
+              <div slot="header">
+                <span class="status-color"></span>
+                <span class="charge-title"> {{ statusOptions[item.devStatus].label || '--' }} </span>
               </div>
-              <div class="status-line">
-                <div>
-                  <div>
-                    <span>当前SOC：</span>
+              <div class="body-content">
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 充电枪口号：</span>
+                    <span> {{ item.gunCode || '--' }} </span>
+                  </div>
+                </div>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 充电枪类型：</span>
+                    <span> {{ devTypeOptions[item.devType - 1].label || '--' }} </span>
+                  </div>
+                </div>
+                <el-divider></el-divider>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 当前SOC：</span>
                     <span> {{ item.currentSoc + '%' || '--' }} </span>
                   </div>
-                  <div>
-                    <span>VIN号：</span>
-                    <span>{{ item.vin || '--' }}</span>
+                  <div class="item-miniblock">
+                    <span> VIN号：</span>
+                    <span> {{ item.vin || '--' }} </span>
                   </div>
                 </div>
-                <div>
-                  <div>
-                    <span>初始SOC：</span>
-                    <span> {{ item.beginSoc + '%' || '--' }} </span>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 初始SOC：</span>
+                    <span> {{ item.beginSoc || '--' }} </span>
                   </div>
-                  <div>
-                    <span>卡号：</span>
-                    <span> {{ item.cardCode || '--' }} </span>
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <span>电量：</span>
-                    <span> {{ item.charged + 'kwh' || '--' }} </span>
-                  </div>
-                  <div>
-                    <span>辅助类型：</span>
-                    <span> {{ item.auxiliaryType | fmtAuxiliaryType }}</span>
+                  <div class="item-miniblock">
+                    <span> 卡号：</span>
+                    <span> {{ item.cardCode || '--'}} </span>
                   </div>
                 </div>
-                <div>
-                  <div>
-                    <span>电压：</span>
-                    <span> {{ item.currentV + 'V' || '--'}} </span>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 电量：</span>
+                    <span> {{ item.charged + 'kwh' || '--' }}</span>
                   </div>
-                  <div>
-                    <span>订单号：</span>
-                    <span> {{ item.billCode || '--'}} </span>
+                  <div class="item-miniblock">
+                    <span> 辅助类型：</span>
+                    <span> {{ item.auxiliaryType | fmtAuxiliaryType}} </span>
                   </div>
                 </div>
-              </div>
-              <div class="status-line">
-                <div>
-                  <div>
-                    <span>开始充电时间：</span>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 电压：</span>
+                    <span> {{ item.currentV + 'V' || '--' }} </span>
+                  </div>
+                  <div class="item-miniblock">
+                    <span> 订单号：</span>
+                    <span> {{ item.billCode || '--' }} </span>
+                  </div>
+                </div>
+                <el-divider></el-divider>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 开始充电时间：</span>
                     <span> {{ item.beginTime | fmtDateTime }} </span>
                   </div>
-                  <div>
-                    <span>预计剩余时间：</span>
+                  <div class="item-miniblock">
+                    <span> 预计剩余时间：</span>
                     <span> {{ item.remainTime + 'min' || '--' }} </span>
                   </div>
                 </div>
-                <div>
-                  <div>
-                    <span>当前电表读数：</span>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 当前电表读数：</span>
                     <span> {{ item.currentMeterKwh + 'kwh' || '--' }} </span>
                   </div>
                 </div>
-              </div>
-              <div class="status-line">
-                <div>
-                  <div>
-                    <span>当前功率：</span>
+                <el-divider></el-divider>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 当前功率：</span>
                     <span> {{ item.currentKw + 'kw' || '--' }} </span>
                   </div>
-                  <div>
-                    <span>当前电流：</span>
+                  <div class="item-miniblock">
+                    <span> 当前电流：</span>
                     <span> {{ item.currentI + 'A' || '--' }} </span>
                   </div>
                 </div>
-                <div>
-                  <div>
-                    <span>电池最高温度：</span>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 电池最高温度：</span>
                     <span> {{ item.tmax + '℃' || '--' }} </span>
                   </div>
-                  <div>
-                    <span>电池最低温度：</span>
+                  <div class="item-miniblock">
+                    <span> 电池最低温度：</span>
                     <span> {{ item.tmin + '℃' || '--' }} </span>
                   </div>
                 </div>
-                <div>
-                  <div>
-                    <span>电池单体最高电压：</span>
+                <div class="item-block">
+                  <div class="item-miniblock">
+                    <span> 电池单体最高电压：</span>
                     <span> {{ item.vmax + 'V' || '--' }} </span>
                   </div>
-                  <div>
-                    <span>电池单体最低电压：</span>
-                    <span> {{ item.vmin + 'V' || '--' }} </span>
+                  <div class="item-miniblock">
+                    <span> 电池单体最低电压：</span>
+                    <span> {{ item.vmin + 'V' || '--'}} </span>
                   </div>
                 </div>
+                <div class="charge-btn">
+                  <el-button 
+                    type="text"
+                    @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
+                    :disabled="![2,4].includes(item.devStatus)">
+                    {{ btnNameOptions[item.devStatus] }}
+                  </el-button>
+                </div>
               </div>
-              <el-button 
-                class="charge-btn" plain
-                @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
-                :disabled="!([2, 4].includes(item.devStatus))"> 
-                {{ btnNameOptions[item.devStatus] }} 
-              </el-button>
-            </div>
+            </el-card>
           </div>
         </el-scrollbar>
       </div>
@@ -413,10 +410,8 @@ export default {
 }
 
 .charge-info {
-  width: 350px;
-  height: 460px;
+  width: 360px;
   margin: 10px;
-  border: 1px solid #ccc;
 
   & > div:not(.charge-btn) {
     border-bottom: 1px solid #ccc;
@@ -441,20 +436,22 @@ export default {
   font-weight: bold;
 }
 
-.status-line {
-  & > div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-}
-
 .charge-btn {
+  margin-top: 10px;
   width: 100%;
   text-align: center;
-  color: #000;
   border: 1px solid #000;
-  cursor: pointer;
+  color: #000;
+  box-sizing: border-box;
 }
+
+.item-block {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 </style>

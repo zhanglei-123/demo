@@ -67,3 +67,14 @@
 .el-select-dropdown__wrap.el-scrollbar__wrap {
   overflow-x: scroll;
 }
+
+.el-card {
+  .el-card__body {
+    padding: 0;
+  }
+}
+
+.el-divider.el-divider--horizontal {
+  margin: 0;
+  margin-top: 10px;;
+}

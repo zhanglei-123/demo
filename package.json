@@ -9,10 +9,11 @@
   "dependencies": {
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "dayjs": "^1.10.4",
     "element-ui": "^2.15.0",
     "file-saver": "^2.0.5",
-    "moment": "^2.29.0",
     "vue": "^2.6.12",
+    "vue-barrage": "0.0.13",
     "vue-router": "^3.4.5",
     "vuex": "^3.5.1"
   },

@@ -27,20 +27,20 @@
           size="mini">
           <el-option></el-option>
         </el-select>
-        <el-button class="custom-btn margin" size="mini">查询</el-button>
-        <el-button class="custom-btn margin" size="mini">重置</el-button>
+        <el-button class="custom-btn margin" size="mini" @click="query">查询</el-button>
+        <el-button class="custom-btn margin" size="mini" @click="reset">重置</el-button>
       </div>
       <div class="btn-block-right">
-        <el-button class="custom-btn margin" size="mini"  @click="start">开启报文实时查看</el-button>
-        <el-button class="custom-btn margin" size="mini">报文文件导出</el-button>
+        <el-button class="custom-btn margin" size="mini" @click="start">开启报文实时查看</el-button>
+        <el-button class="custom-btn margin" size="mini" @click="exportFile">报文文件导出</el-button>
       </div>
     </div> 
     <div class="file-content flex">
       <div class="file-list">
         <el-table 
           :data="tableData"
-          v-loading="tableLoading"
-        ></el-table>
+          v-loading="tableLoading">
+        </el-table>
         <el-pagination
           background
           layout="prev, pager, next"
@@ -80,7 +80,10 @@
     methods: {
       start() {
         this.$router.push({ name: 'RealtimeReport' });
-      }
+      },
+      query() {},
+      exportFile() {},
+      reset() {}
     }
   };
 </script>
