@@ -189,7 +189,7 @@
                 </div>
                 <div class="charge-btn">
                   <el-button 
-                    type="text"
+                    type="info"
                     @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
                     :disabled="![2,4].includes(item.devStatus)">
                     {{ btnNameOptions[item.devStatus] }}
@@ -453,6 +453,15 @@ export default {
   border: 1px solid #000;
   color: #000;
   box-sizing: border-box;
+
+  .el-button {
+    width: 100%;
+    height: 100%;
+    border-radius: unset;
+    background: transparent;
+    border: none;
+    color: #000;
+  }
 }
 
 .item-block {
