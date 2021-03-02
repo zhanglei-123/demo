@@ -64,7 +64,7 @@
         <el-button 
           size="mini" 
           class="custom-btn" 
-          @click="queryDevStatus">
+          @click="query">
           查询
         </el-button>
         <el-button 
@@ -301,6 +301,28 @@ export default {
     this.queryDevStatus();
   },
   methods: {
+    // 查询
+    query() {
+      this.queryDevStatus();
+      // 每隔5秒重新刷新页面
+      this.timer2 = setInterval(async () => {
+        const params = {
+          ctrlAddr: this.addr,
+          devType: parseInt(this.devType),
+          gunCode: parseInt(this.gun_number) || 0,
+          workStatus: parseInt(this.status) || 0
+        }
+        this.dataLoading = true;
+        let data = await queryDevStatus(params);
+        if(data.code == 1) {
+          this.devList = data.data;
+          this.dataLoading = false;
+        } else {
+          this.$message.error('获取数据失败');
+          this.dataLoading = false;
+        }
+      }, 5000)
+    },
     // 刷新
     refresh() {
       this.queryDevStatus();
@@ -338,22 +360,18 @@ export default {
         params.operationType = rs.value; 
         this.loadingText = ['正在开启...', '正在结束...'][rs.value - 1];
       }
-      confirm(`确认${btnName}吗？`).then(() => {
+      confirm(`确认${btnName}吗？`).then(async () => {
         this.$set(this.startLoading, item.gunCode, true);
-        if(this.timer) {
-          clearTimeout(this.timer);
-        } else {
-          this.timer = setTimeout(async () => {
-            let data = await ctrlCharge(params);
-            this.$set(this.startLoading, item.gunCode, false);
-            if(data.code == 1) {
-              this.$message.success('操作成功');
-              this.queryDevStatus();
-            } else {
-              this.$message.error('操作失败')
-            }
-          }, 5000)
-        }
+        let data = await ctrlCharge(params);
+        this.timer = setTimeout(() => {
+          this.$set(this.startLoading, item.gunCode, false);
+          if(data.code == 1) {
+            this.$message.success('操作成功');
+            this.queryDevStatus();
+          } else {
+            this.$message.error('操作失败')
+          }
+        }, 5000)
       }).catch(() => {
         this.$message.info(`已取消该操作`);
       })
@@ -365,6 +383,7 @@ export default {
   },
   destroyed() {
     clearTimeout(this.timer);
+    clearInterval(this.timer2);
   }
 };
 </script>

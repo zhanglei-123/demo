@@ -1,13 +1,13 @@
 <template>
   <div>
     <div style="width: 100%; height: 100%; background: #000000">
-        <barrage 
-          ref="barrage"
-          class="barrage"
-          :barrage-list="barrageList"
-          :speed="speed"
-          :loop="loop"
-          :channels="channels"></barrage>
+      <barrage 
+        ref="barrage"
+        class="barrage"
+        :barrage-list="barrageList"
+        :speed="speed"
+        :loop="loop"
+        :channels="channels"></barrage>
     </div>
   </div>
 </template>
