@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500px" height="300px" viewBox="0 0 500 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>路径</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="500" height="300" rx="6"></rect>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#B480F3" offset="0%"></stop>
+            <stop stop-color="#4A90E2" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="主页展示" transform="translate(-540.000000, -250.000000)">
+            <g id="路径" transform="translate(540.000000, 250.000000)">
+                <g id="蒙版">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use fill="#D3D5F4" xlink:href="#path-1"></use>
+                </g>
+                <path d="M434.426189,-41.8993711 C333.092856,-74.5660377 275.426189,-54.2327044 261.426189,19.1006289 C240.426189,129.100629 184.202777,133.994157 217.203314,201.179385 C256.426189,252.100629 326.74733,196.200648 344.426189,268.100629 C362.105049,340.000609 449.607092,352.509436 508.536623,324.22092 C567.466154,295.932403 512.034302,263.935389 590.426189,251.100629 C668.818077,238.265868 679.498271,126.389146 639.426189,98.1006289 C599.354108,69.812112 569.601912,111.599081 569.712624,46.4108664 C569.712624,-32.1683473 524.617146,-61.6050931 434.426189,-41.8993711 Z" fill="url(#linearGradient-3)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,24 +1,34 @@
 <template>
   <div class="login-container">
     <div class="login-content">
-      <div class="title">特来电第三方对接辅助工具</div>
-      <div class="login-form">
-        <div class="sub-title">登录</div>
-        <el-form 
-          label-width="100px"
-          label-position="left" 
-          :rules="formRules" 
-          :model="form" 
-          ref="loginForm">
-          <el-form-item label="用户名" prop="username">
-            <el-input type="text" v-model="form.username" placeholder="请输入用户名"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input :type="type" v-model="form.password" placeholder="请输入密码"></el-input>
-          </el-form-item>
-         <el-checkbox v-model="checked" @change="showPassword">显示密码</el-checkbox>
-        </el-form>
-        <el-button type="primary" class="login-button" @click="login">登录</el-button>
+      <div class="left">
+        <img src="/images/bg.svg" alt="">
+      </div>
+      <div class="right">
+        <div class="login-form">
+          <div class="title">欢迎登录</div>
+          <div class="sub-title">特来电第三方介入辅助工具</div>
+          <el-form :model="form" :rules="formRules" ref="loginForm">
+            <el-form-item prop="username">
+              <el-input 
+                class="login-input"
+                v-model="form.username" 
+                placeholder="请输入用户名">
+                <img src="/images/user.svg" alt="" slot="prefix">
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                class="login-input" 
+                v-model="form.password" 
+                placeholder="请输入密码"
+                type="password">
+                <img src="/images/pwd.svg" alt="" slot="prefix">
+              </el-input>
+            </el-form-item>
+          </el-form>
+          <el-button class="login-button" @click="login">登录</el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -30,8 +40,6 @@ import { loginRequest } from '../service';
 export default {
   data() {
     return {
-      checked: false, // 显示密码
-      type: 'password', // input 类型 
       form: {
         username: '', // 用户名
         password: '' // 密码
@@ -43,9 +51,6 @@ export default {
     }
   },
   methods: {
-    showPassword() {
-      this.type =  this.checked ? 'text' : 'password'; // 密码显示隐藏
-    },
     // 登录
     async login(){
       const valid = this.$refs.loginForm.validate();
@@ -58,7 +63,8 @@ export default {
         if(data.code == 1) {
           this.$message.success('登录成功');
           Cookies.set('token', data.data);
-          this.$router.push({ name: 'Index' });
+          Cookies.set('userName', this.form.username);
+          this.$router.push({ name: 'Index'});
         } else {
           this.$message.error('用户名密码错误');
         }
@@ -75,36 +81,62 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: url('../assets/images/bg.png');
 }
 
 .login-content {
-  border: 1px solid #ccc;
-  padding: 20px;
+  width: 800px;
+  height: 480px;
+  display: flex;
+  background: #FFFFFF;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.30);
+  border-radius: 10px;
 }
 
-.title {
-  color: #000;
-  font-weight: 100;
-  font-size: 20px;
-  text-align: center;
+.left {
+  width: 50%;
+  height: 100%;
+  padding: 181px 0 44px 42px;
+  box-sizing: border-box;
+}
+
+.right {
+  width: 50%;
+  height: 100%;
+  padding: 72px 54px 57px 54px;
+  box-sizing: border-box;
 }
 
 .login-form {
-  width: 400px;
-  height: 300px;
-  padding: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.title {
+  font-family: PingFang-SC-Bold;
+  font-size: 32px;
+  color: #4A90E2;
+  letter-spacing: 4px;
+  line-height: 45px;
 }
 
 .sub-title {
-  width: 100%;
-  height: 40px;
-  line-height: 40px;
-  font-size: 18px;
-  color: #353f42;
+  font-family: PingFangSC-Medium;
+  font-size: 16px;
+  color: #4A90E2;
+  line-height: 22px;
+  margin: 5px 0 25px 0;
 }
 
 .login-button {
-  width: 100%;
-  margin-top: 20px;
+  width: 280px;
+  height: 45px;
+  background: #4A90E2;
+  border-radius: 22.5px;
+  font-family: PingFangSC-Semibold;
+  font-size: 16px;
+  color: #FFFFFF;
+  letter-spacing: 4px;
+  margin-top: 99px;
 }
 </style>

@@ -1,207 +1,194 @@
 <template>
-  <div class="charge-container flex">
-    <div class="title">特来电第三方接入辅助工具</div>
-    <div class="charge-content flex">
-      <div class="operation-bar">
-        <div class="operation-item">
-          <span>充电设备地址：</span>
-          <el-input 
-            class="custom-input" 
-            v-model="addr" 
-            placeholder="请输入充电设备地址" 
-            clearable
-            size="mini">
-          </el-input>
-        </div>
-        <div class="operation-item">
-          <span>枪口号：</span>
-          <el-select 
-            class="custom-select" 
-            v-model="gun_number" 
-            placeholder="请选择" 
-            clearable
-            size="mini">
-            <el-option 
-              v-for="item in 5" 
-              :key="item"
-              :label="item" 
-              :value="item">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="operation-item">
-          <span>工作状态：</span>
-          <el-select 
-            class="custom-select" 
-            v-model="status" 
-            placeholder="请选择" 
-            clearable
-            size="mini">
-            <el-option 
-              v-for="item in statusOptions" 
-              :key="item.value"
-              :label="item.label" 
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="operation-item">
-          <span>设备类型：</span>
-          <el-select 
-            class="custom-select" 
-            v-model="devType" 
-            placeholder="请选择" 
-            clearable
-            size="mini">
-            <el-option 
-              v-for="item in devTypeOptions" 
-              :key="item.value"
-              :label="item.label" 
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <el-button 
-          size="mini" 
-          class="custom-btn" 
-          @click="query">
-          查询
-        </el-button>
-        <el-button 
-          size="mini" 
-          class="custom-btn" 
-          @click="refresh">
-          刷新
-        </el-button>
+  <div class="charge-container flex" v-loading="dataLoading">
+    <div class="operation-bar">
+      <div class="operaion-item margin">
+        <span>充电设备地址：</span>
+        <el-input 
+          class="custom-input" 
+          v-model="addr" 
+          placeholder="请输入充电设备地址" 
+          clearable
+          size="mini">
+        </el-input>
       </div>
-      <div class="bottom-warp" v-loading="dataLoading">
-        <el-scrollbar>
-          <div class="charge-wrapper flex">
-            <el-card 
-              class="charge-info" shadow="always"
-              v-for="item in devList" :key="item.gunCode"
-              v-loading="startLoading[item.gunCode]"
-              :element-loading-text="loadingText"
-              element-loading-spinner="el-icon-loading"
-              element-loading-background="rgba(0,0,0,0.8)">
-              <div slot="header">
-                <span class="status-color"></span>
-                <span class="charge-title"> {{ statusOptions[item.devStatus].label || '--' }} </span>
-              </div>
-              <div class="body-content">
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 充电枪口号：</span>
-                    <span> {{ item.gunCode || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block divider-line">
-                  <div class="item-miniblock">
-                    <span> 充电枪类型：</span>
-                    <span> {{ devTypeOptions[item.devType - 1].label || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 当前SOC：</span>
-                    <span> {{ item.currentSoc + '%' || '--' }} </span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> VIN号：</span>
-                    <span> {{ item.vin || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 初始SOC：</span>
-                    <span> {{ item.beginSoc || '--' }} </span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> 卡号：</span>
-                    <span> {{ item.cardCode || '--'}} </span>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 电量：</span>
-                    <span> {{ item.charged + 'kwh' || '--' }}</span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> 辅助类型：</span>
-                    <span> {{ item.auxiliaryType | fmtAuxiliaryType}} </span>
-                  </div>
-                </div>
-                <div class="item-block divider-line">
-                  <div class="item-miniblock">
-                    <span> 电压：</span>
-                    <span> {{ item.currentV + 'V' || '--' }} </span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> 订单号：</span>
-                    <span> {{ item.billCode || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 开始充电时间：</span>
-                    <span> {{ item.beginTime | fmtDateTime }} </span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> 预计剩余时间：</span>
-                    <span> {{ item.remainTime + 'min' || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block divider-line">
-                  <div class="item-miniblock">
-                    <span> 当前电表读数：</span>
-                    <span> {{ item.currentMeterKwh + 'kwh' || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 当前功率：</span>
-                    <span> {{ item.currentKw + 'kw' || '--' }} </span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> 当前电流：</span>
-                    <span> {{ item.currentI + 'A' || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 电池最高温度：</span>
-                    <span> {{ item.tmax + '℃' || '--' }} </span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> 电池最低温度：</span>
-                    <span> {{ item.tmin + '℃' || '--' }} </span>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="item-miniblock">
-                    <span> 电池单体最高电压：</span>
-                    <span> {{ item.vmax + 'V' || '--' }} </span>
-                  </div>
-                  <div class="item-miniblock">
-                    <span> 电池单体最低电压：</span>
-                    <span> {{ item.vmin + 'V' || '--'}} </span>
-                  </div>
-                </div>
-                <div class="charge-btn">
-                  <el-button 
-                    type="info"
-                    @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
-                    :disabled="![2,4].includes(item.devStatus)">
-                    {{ btnNameOptions[item.devStatus] }}
-                  </el-button>
-                </div>
-              </div>
-            </el-card>
-          </div>
-        </el-scrollbar>
+      <div class="operation-item margin">
+        <span>枪口号：</span>
+        <el-select 
+          class="custom-select" 
+          v-model="gun_number" 
+          placeholder="请选择" 
+          clearable
+          size="mini">
+          <el-option 
+            v-for="item in 5" 
+            :key="item"
+            :label="item" 
+            :value="item">
+          </el-option>
+        </el-select>
       </div>
+      <div class="operation-item margin">
+        <span>工作状态：</span>
+        <el-select 
+          class="custom-select" 
+          v-model="status" 
+          placeholder="请选择" 
+          clearable
+          size="mini">
+          <el-option 
+            v-for="item in statusOptions" 
+            :key="item.value"
+            :label="item.label" 
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="operation-item margin">
+        <span>设备类型：</span>
+        <el-select 
+          class="custom-select" 
+          v-model="devType" 
+          placeholder="请选择" 
+          clearable
+          size="mini">
+          <el-option 
+            v-for="item in devTypeOptions" 
+            :key="item.value"
+            :label="item.label" 
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </div>
+      <el-button 
+        size="mini"
+        class="custom-btn margin" 
+        @click="query">
+        查询
+      </el-button>
+      <el-button 
+        size="mini"
+        class="custom-btn" 
+        @click="refresh">
+        刷新
+      </el-button>
     </div>
-  </div>
+    <el-scrollbar style="height: 100%;">
+      <div class="main-wrapper">
+        <div 
+          class="main-block" 
+          v-for="item in devList" 
+          :key="item.gunCode"
+          v-loading="startLoading[item.gunCode]"
+          :element-loading-text="loadingText"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0,0,0,0.8)">
+          <div class="top">
+            <div class="top-left">
+              <img :src="'/images/' + imgSrc[item.devStatus]" alt="">
+            </div>
+            <div class="top-right">
+              <div class="charge-mini-block">
+                <span class="desc">充电枪口号</span>
+                <span class="number-label"> {{ item.gunCode | fmtEmptyText }} </span>
+              </div>
+              <div class="charge-mini-block">
+                <span class="desc">充电枪类型</span>
+                <span class="number-label"> {{ devTypeOptions[item.devType - 1].label | fmtEmptyText }} </span>
+              </div>
+            </div>
+          </div>
+          <div class="middle">
+            <div class="soc-mini-block">
+              <div class="desc">初始SOC</div>
+              <div class="soc-bar">
+                <el-progress :percentage="item.beginSoc" color="#4A90E2" class="progress1"></el-progress>
+              </div>
+            </div>
+            <div class="soc-mini-block current-soc-block">
+              <div class="desc">当前SOC</div>
+              <div class="soc-bar">
+                <el-progress :percentage="item.currentSoc" color="#7ED321" class="progress2"></el-progress>
+              </div>
+            </div>
+            <div class="mini-block">
+              <span class="desc">VIN号</span>
+              <span class="number-label"> {{ item.vin | fmtEmptyText }} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">卡号</span>
+              <span class="number-label"> {{ item.cardCode | fmtEmptyText }} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">电量/kwh</span>
+              <span class="number-label"> {{ item.charged | fmtEmptyText }} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">电压/V</span>
+              <span class="number-label"> {{ item.currentV | fmtEmptyText }} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">辅助类型/V</span>
+              <span class="number-label"> {{ item.auxiliaryType | fmtAuxiliaryType}} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">订单号</span>
+              <span class="number-label"> {{ item.billCode | fmtEmptyText }} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">开始充电时间</span>
+              <span class="number-label"> {{ item.beginTime | fmtDateTime }} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">预计剩余时间</span>
+              <span class="number-label"> {{ item.remainTime | fmtEmptyText }} </span>
+            </div>
+             <div class="mini-block">
+              <span class="desc">当前电表读数/kwh</span>
+              <span class="number-label"> {{ item.currentMeterKwh | fmtEmptyText }} </span>
+            </div>
+          </div>
+          <div class="bottom">
+            <div class="bottom-block">
+              <div class="bottom-mini-block">
+                <span class="desc">当前功率/kw</span>
+                <span class="number-label"> {{ item.currentKw | fmtEmptyText }} </span>
+              </div>
+              <div class="bottom-mini-block">
+                <span class="desc">当前电流/A</span>
+                <span class="number-label"> {{ item.currentI | fmtEmptyText }} </span>
+              </div>
+            </div>
+            <div class="bottom-block">
+              <div class="bottom-mini-block">
+                <span class="desc">电池最高温度/℃</span>
+                <span class="number-label"> {{ item.tmax | fmtEmptyText }} </span>
+              </div>
+              <div class="bottom-mini-block">
+                <span class="desc">电池最低温度/℃</span>
+                <span class="number-label"> {{ item.tmin | fmtEmptyText }} </span>
+              </div>
+            </div>
+            <div class="mini-block">
+              <span class="desc">电池单体最高电压/V</span>
+              <span class="number-label"> {{ item.vmax | fmtEmptyText }} </span>
+            </div>
+            <div class="mini-block">
+              <span class="desc">电池单体最低电压/V</span>
+              <span class="number-label"> {{ item.vmin | fmtEmptyText }} </span>
+            </div>
+          </div>
+          <div class="charge-btn-block">
+            <button
+              class="charge-btn"
+              @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
+              :disabled="![2,4].includes(item.devStatus)">
+              {{ btnNameOptions[item.devStatus] }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </el-scrollbar>
+  </div> 
 </template>
 
 <script>
@@ -277,6 +264,16 @@ export default {
           value: 2
         }
       ],
+      imgSrc: [
+        '',
+        'free.svg',
+        'gun.svg',
+        'pause.svg',
+        'charging.svg',
+        'charged.svg',
+        'off.svg',
+        'fault.svg'
+      ],
       startLoading: {},
       loadingText: ''
     }
@@ -294,6 +291,13 @@ export default {
         return '--';
       } else {
         return dayjs(val).format('YYYY-MM-DD hh:mm:ss');
+      }
+    },
+    fmtEmptyText(val) {
+      if(!val) {
+        return '--';
+      } else {
+        return val;
       }
     }
   },
@@ -395,87 +399,131 @@ export default {
   flex-direction: column;
 }
 
-.title {
-  width: 100%;
-  font-size: 20px;
-  padding: 15px 0 15px 10px;
+.main-wrapper {
+  flex: 1;
+  padding: 0 160px;
   box-sizing: border-box;
-  font-weight: 100;
-}
-
-.charge-content {
-  height: calc(100vh - 60px);
-  flex-direction: column;
-}
-
-.bottom-warp {
-  width: 100%;
-  height: calc(100% - 60px);
-  padding: 10px 20px;
-  box-sizing: border-box;
-
-  .el-scrollbar{
-    height: 100%;
-  }
-}
-
-.charge-wrapper {
-  width: 100%;
-  height: 100%;
+  display: flex;
   flex-wrap: wrap;
 }
 
-.charge-info {
+.main-block {
   width: 360px;
-  margin: 10px;
-  font-size: 13px;
+  background: #FFFFFF;
+  border-radius: 6px;
+  margin: 10px 20px;
 
-  .status-color {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background: green;
-    vertical-align: middle;
-    margin-right: 10px;
+  .number-label {
+    font-family: PingFangSC-Medium;
+    font-size: 16px;
+    color: #333333;
+    letter-spacing: 0;
+  }
+
+  .desc {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #666666;
+    letter-spacing: 0;
+    line-height: 14px;
   }
 }
 
-.charge-title {
-  font-size: 18px;
-  margin: 10px 0;
-  font-weight: bold;
+.top {
+  width: 100%;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
 }
 
-.charge-btn {
-  margin-top: 10px;
-  width: 100%;
-  text-align: center;
-  border: 1px solid #000;
-  color: #000;
+.top-right {
+  flex: 1;
+  padding-left: 20px;
   box-sizing: border-box;
 
-  .el-button {
-    width: 100%;
-    height: 100%;
-    border-radius: unset;
-    background: transparent;
-    border: none;
-    color: #000;
+  .charge-mini-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
   }
 }
 
-.item-block {
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+.mini-block {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.item-block.divider-line {
-  border-bottom: 1px solid #cccccc;
-  padding-bottom: 10px;
+  padding: 0 20px;
+  margin: 5px 0;
   box-sizing: border-box;
 }
+
+.middle {
+  .soc-bar {
+    flex: 1;
+    margin-left: 20px;
+  }
+
+  .soc-mini-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 20px;
+    margin: 10px 0;
+    box-sizing: border-box;
+  }
+
+  .current-soc-block.soc-mini-block {
+    margin-bottom: 20px;
+  }
+}
+
+.bottom {
+  .bottom-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .bottom-block:first-of-type {
+    margin-top: 20px;
+  }
+
+  .bottom-mini-block {
+    width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.charge-btn-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.charge-btn {
+  width: 209px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: #4A90E2;
+  box-shadow: 0 2px 4px 0 rgba(74,144,226,0.50);
+  border-radius: 6px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 </style>

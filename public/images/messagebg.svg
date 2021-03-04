@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300px" height="300px" viewBox="0 0 300 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>路径 6</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="300" height="300" rx="6"></rect>
+    </defs>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="主页展示" transform="translate(-540.000000, -560.000000)">
+            <g id="路径-6" transform="translate(540.000000, 560.000000)">
+                <g id="蒙版">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use fill="#81C784" xlink:href="#path-1"></use>
+                </g>
+                <path d="M-13,56 C46.3304721,58.1978022 81.4892704,82.9230769 92.4763948,130.175824 C135.32618,253.802198 179.824034,156.549451 296.83691,214.241758 C346.27897,234.021978 371,281.274725 371,356 L6.77682403,356 L-13,56 Z" fill-opacity="0.48" fill="#B5E6B7" transform="translate(179.000000, 206.000000) rotate(-47.000000) translate(-179.000000, -206.000000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

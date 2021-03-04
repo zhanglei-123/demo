@@ -1,13 +1,38 @@
 <template>
-  <div class="main-container flex a-c">
-    <div class="title">
-      <span>特来电第三方接入辅助工具</span>
-    </div>
-    <div class="content flex">
-      <div class="item flex j-c a-c" @click="monitorChargingStatus">充电桩状态监视</div>
-      <div class="item flex j-c a-c" @click="queryOrder">订单查询</div>
-      <div class="item flex j-c a-c" @click="queryMessage">报文查看</div>
-      <div class="item flex j-c a-c">开发资料</div>
+  <div class="main-container">
+    <div class="content-wrap">
+      <div class="charge-wrap">
+        <div class="charge-block" @click="monitorChargingStatus">
+          <div class="block">
+            <img src="/images/charge.svg" alt="">
+          </div>
+          <div class="desc">充电状态监视</div>
+        </div>
+      </div>
+      <div class="order-wrap">
+        <div class="order-block" @click="queryOrder">
+          <div class="mini-block">
+            <img src="/images/order.svg" alt="">
+          </div>
+          <div class="desc">订单查询</div>
+        </div>
+      </div>
+      <div class="message-wrap">
+        <div class="message-block" @click="queryMessage">
+          <div class="mini-block">
+            <img src="/images/message.svg" alt="">
+          </div>
+          <div class="desc">报文查看</div>
+        </div>
+      </div>
+      <div class="document-wrap">
+        <div class="document-block">
+          <div class="block">
+            <img src="/images/doc.svg" alt="">
+          </div>
+          <div class="desc">开发资料</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -19,6 +44,14 @@ export default {
     return {
 
     }
+  },
+  computed: {
+    userName() {
+      return Cookies.get('userName');
+    }
+  },
+  mounted() {
+    console.log(Cookies.get('userName'))
   },
   methods: {
     // 报文查看
@@ -41,34 +74,106 @@ export default {
 .main-container {
   width: 100%;
   height: 100%;
-  flex-direction: column;
+  background-image: url('../assets/images/mainbg.png');
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.title {
-  width: 100%;
-  font-size: 20px;
-  padding: 15px 0 15px 10px;
-  box-sizing: border-box;
-  font-weight: 100;
+.content-wrap {
+  width: 810px;
+  height: 610px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.content {
-  width: 80%;
-  height: calc(100% - 100px);
-  padding: 80px 40px;
-  box-sizing: border-box;
+.charge-wrap {
+  width: 500px;
+  height: 300px;
+  background-image: url('/images/chargebg.svg');
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
-.item {
-  width: 200px;
-  height: 90px;
-  background: #798093;
-  color: #fff;
-  margin: 20px 30px;
-  cursor: pointer;
+.charge-block {
+  margin: 54px 264px 73px 74px;
 
-  &:focus, &:hover {
-    background: #979dad;
+  & > .desc {
+    margin-top: 20px;
   }
+}
+
+.order-wrap {
+  width: 300px;
+  height: 300px;
+  background-image: url('/images/orderbg.svg');
+  margin-bottom: 10px;
+}
+
+.order-block {
+  margin: 70px 133px 73px 57px;
+
+  & > .desc {
+    margin-top: 38px;
+  }
+}
+
+.message-wrap {
+  width: 300px;
+  height: 300px;
+  background-image: url('/images/messagebg.svg');
+  margin-right: 10px;
+}
+
+.message-block {
+  margin: 80px 91px 62px 74px;
+
+  & > .desc {
+    margin-top: 37px;
+  }
+}
+
+.document-wrap {
+  width: 500px;
+  height: 300px;
+  background-image: url('/images/docbg.svg');
+}
+
+.document-block {
+  margin: 65px 141px 62px 245px;
+
+  & > .desc {
+    margin-top: 21px;
+  }
+}
+
+.block {
+  width: 120px;
+  height: 120px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mini-block {
+  width: 90px;
+  height: 90px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.desc {
+  font-family: PingFang-SC-Bold;
+  font-size: 24px;
+  color: #333333;
+  letter-spacing: 3px;
+  cursor: pointer;
 }
 </style>
