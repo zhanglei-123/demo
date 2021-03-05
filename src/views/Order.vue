@@ -100,9 +100,9 @@
           class="custom-pagination"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage"
+          :current-page.sync="currentPage"
+          :page-size="pageSize"
           :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
           layout="total, sizes, prev, pager, next, slot, jumper"
           :total="total">
         </el-pagination>
@@ -344,6 +344,7 @@ export default {
       originalMessage: [], // 报文
       errorCheck: {}, // 错误校验
       currentPage: 1, // 当前页
+      pageSize: 10,
       total: 0, 
     }
   },
@@ -366,12 +367,15 @@ export default {
         beginTime: this.begin_time, // 开始时间
         endTime: this.end_time, // 结束时间
         billCode: this.no, // 订单号
-        terminalAddr: this.addr // 充电终端地址
+        terminalAddr: this.addr, // 充电终端地址
+        pageCount: this.currentPage, // 当前页
+        pageSize: this.pageSize
       };
       this.tableLoading = true;
-      let data = await queryOrderList(params);
-      if(data.code == 1) {
-        this.tableData = data.data;
+      let resp = await queryOrderList(params);
+      if(resp.code == 1) {
+        this.tableData = resp.data.data;
+        this.total = resp.data.totalCount;
         this.tableLoading = false;
       } else {
         this.$message.error('数据获取失败');
@@ -442,8 +446,12 @@ export default {
       })
       return message;
     },
-    handleSizeChange() {},
-    handleCurrentChange() {}
+    handleSizeChange() {
+      this.queryOrderList();
+    },
+    handleCurrentChange() {
+      this.queryOrderList();
+    }
   }
 };
 </script>
