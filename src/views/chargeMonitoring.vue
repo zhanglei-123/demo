@@ -91,6 +91,10 @@
                 <span class="desc">充电枪口号</span>
                 <span class="number-label"> {{ item.gunCode | fmtEmptyText }} </span>
               </div>
+              <div class="charge-mini-block" v-if="item.devStatus == 4">
+                <span class="desc">充电方式</span>
+                <span class="number-label"> {{ startTypeOptions[item.startType] }} </span>
+              </div>
               <div class="charge-mini-block">
                 <span class="desc">充电枪类型</span>
                 <span class="number-label"> {{ devTypeOptions[item.devType - 1].label | fmtEmptyText }} </span>
@@ -254,6 +258,17 @@ export default {
         }
       ], // 类型列表
       btnNameOptions: ['未知状态', '请插枪', '开始充电', '恢复充电', '停止充电', '请拔枪', '暂停服务', '检查故障'],
+      startTypeOptions: [
+        '未知', 
+        '后台APP启动', 
+        '在线刷卡启动', 
+        '在线VIN启动', 
+        '本地离线卡鉴权启动', 
+        '本地VIN鉴权启动', 
+        '本地离线卡无鉴权启动', 
+        '本地离线VIN无鉴权启动', 
+        '本地按钮、屏幕启动'
+      ], // 启动方式
       operationTypeOptions: [
         {
           label: '开始充电',
@@ -376,9 +391,7 @@ export default {
             this.$message.error('操作失败')
           }
         }, 5000)
-      }).catch(() => {
-        this.$message.info(`已取消该操作`);
-      })
+      }).catch()
     },
     // 按钮点击事件
     handleBtnClick(item, btnName) {
@@ -435,6 +448,7 @@ export default {
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  height: 120px;
 }
 
 .top-right {
@@ -446,7 +460,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 10px 0;
+    margin: 5px 0;
   }
 }
 
@@ -519,6 +533,7 @@ export default {
   background: #4A90E2;
   box-shadow: 0 2px 4px 0 rgba(74,144,226,0.50);
   border-radius: 6px;
+  cursor: pointer;
 }
 
 button:disabled {
