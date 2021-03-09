@@ -124,7 +124,7 @@
             </div>
             <div class="mini-block">
               <span class="desc">电量/kwh</span>
-              <span class="number-label"> {{ item.charged | fmtEmptyText }} </span>
+              <span class="number-label"> {{ item.currentMeterKwh | fmtEmptyText }} </span>
             </div>
             <div class="mini-block">
               <span class="desc">电压/V</span>
@@ -264,10 +264,10 @@ export default {
         '在线刷卡启动', 
         '在线VIN启动', 
         '本地离线卡鉴权启动', 
-        '本地VIN鉴权启动', 
+        '本地离线VIN鉴权启动', 
         '本地离线卡无鉴权启动', 
         '本地离线VIN无鉴权启动', 
-        '本地按钮、屏幕启动'
+        '本地按钮、屏幕等启动'
       ], // 启动方式
       operationTypeOptions: [
         {
@@ -324,23 +324,10 @@ export default {
     query() {
       this.queryDevStatus();
       // 每隔5秒重新刷新页面
-      this.timer2 = setInterval(async () => {
-        const params = {
-          ctrlAddr: this.addr,
-          devType: parseInt(this.devType),
-          gunCode: parseInt(this.gun_number) || 0,
-          workStatus: parseInt(this.status) || 0
-        }
-        this.dataLoading = true;
-        let data = await queryDevStatus(params);
-        if(data.code == 1) {
-          this.devList = data.data;
-          this.dataLoading = false;
-        } else {
-          this.$message.error('获取数据失败');
-          this.dataLoading = false;
-        }
-      }, 5000)
+      clearTimeout(this.timer2);
+      this.timer2 = setTimeout(() => {
+        this.query();
+      }, 5000);
     },
     // 刷新
     refresh() {
@@ -382,6 +369,7 @@ export default {
       confirm(`确认${btnName}吗？`).then(async () => {
         this.$set(this.startLoading, item.gunCode, true);
         let data = await ctrlCharge(params);
+        clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           this.$set(this.startLoading, item.gunCode, false);
           if(data.code == 1) {
@@ -398,9 +386,9 @@ export default {
       this.ctrlCharge(item, btnName);
     }
   },
-  destroyed() {
+  beforeDestroy() {
     clearTimeout(this.timer);
-    clearInterval(this.timer2);
+    clearTimeout(this.timer2);
   }
 };
 </script>

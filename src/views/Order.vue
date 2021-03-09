@@ -85,9 +85,9 @@
               <span> {{ scope.row.endTime | fmtEmptyText }} </span>
             </template>
           </el-table-column>
-          <el-table-column label="结束原因" prop="stopReason" align="center">
+          <el-table-column label="结束原因" prop="stopReasonDesc" align="center">
             <template slot-scope="scope">
-              <span> {{ scope.row.stopReason | fmtEmptyText }} </span>
+              <span> {{ scope.row.stopReasonDesc | fmtEmptyText }} </span>
             </template>
           </el-table-column>
           <el-table-column label="订单状态" prop="bill_type" align="center">
@@ -276,7 +276,7 @@
                 <span>结束原因：</span>
               </div>
               <div class="detail-label">
-                {{ detailInfo.stopReason | fmtEmptyText }}
+                {{ detailInfo.stopReasonDesc | fmtEmptyText }}
               </div>
             </div>
           </div>
@@ -317,7 +317,7 @@ export default {
   },
   data () {
     return {
-      addr: '1101011119101', // 地址
+      addr: '', // 地址
       no: '', // 订单编号
       begin_time: '', // 开始时间
       end_time: '', // 结束时间
@@ -330,10 +330,10 @@ export default {
         '在线刷卡启动', 
         '在线VIN启动', 
         '本地离线卡鉴权启动', 
-        '本地VIN鉴权启动', 
+        '本地离线VIN鉴权启动', 
         '本地离线卡无鉴权启动', 
         '本地离线VIN无鉴权启动', 
-        '本地按钮、屏幕启动'
+        '本地按钮、屏幕等启动'
       ], // 启动方式
       billStatusOptions: ['充电中', '订单完成', '订单启动失败', '订单处理失败'], // 订单状态
       dialogVisible: false, // 弹窗可见
@@ -397,7 +397,7 @@ export default {
       if(data.code == 1) {
         this.detailInfo = data.data || {}; 
         this.errorCheck = JSON.parse(data.data.errorCheck); // 错误校验
-        this.originalMessage = this.processOriginMessage(data.data.originalMessage); // 报文
+        this.originalMessage = Object.entries(JSON.parse(data.data.originalMessage)); // 报文
         this.powerSegment = data.data.powerSegment.substr(0, data.data.powerSegment.length - 1).split(','); // 数据
         let params = [];
         let date = this.processDateList();
@@ -429,22 +429,6 @@ export default {
       })
       rs[rs.length - 1] = `${rs[rs.length - 1]}-${rsFirst}`;
       return rs;
-    },
-    // 处理报文格式
-    processOriginMessage(v){
-      let message = Object.entries(JSON.parse(v));
-      message.map(item => {
-        if (item[0] == '启动方式' || item[0] == '启动充电类型') {
-          item[1] = this.startTypeOptions[item[1]];
-        } else if (item[0] == '充电枪类型') {
-          item[1] = this.devTypeOptions[item[1] - 1];
-        } else if (item[0] == '充电开始时间' || item[0] == '充电结束时间') {
-          item[1] = item[1] ? dayjs(item[1]).format('YYYY-MM-DD hh:mm:ss') : '--';
-        } else {
-          item[1] ? item[1] : '--';
-        } 
-      })
-      return message;
     },
     handleSizeChange() {
       this.queryOrderList();

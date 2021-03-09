@@ -7,7 +7,7 @@
       <div class="right">
         <div class="login-form">
           <div class="title">欢迎登录</div>
-          <div class="sub-title">特来电第三方介入辅助工具</div>
+          <div class="sub-title">特来电第三方接入辅助工具</div>
           <el-form :model="form" :rules="formRules" ref="loginForm">
             <el-form-item prop="username">
               <el-input 

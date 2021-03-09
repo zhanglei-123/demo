@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <div class="title">特来电第三方介入辅助工具</div>
+    <div class="title" @click="linkTo">特来电第三方接入辅助工具</div>
     <div class="user-info"> 用户 {{ userName }} </div>
   </div>
 </template>
@@ -10,6 +10,11 @@ export default {
   computed: {
     userName() {
       return Cookies.get('userName');
+    }
+  },
+  methods: {
+    linkTo() {
+      this.$router.push({ name: 'Index' });
     }
   }
 };
@@ -31,6 +36,7 @@ export default {
   font-family: PingFang-SC-Heavy;
   font-size: 30px;
   color: #FFFFFF;
+  cursor: pointer;
 }
 
 .user-info {
