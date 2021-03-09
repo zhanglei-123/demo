@@ -330,8 +330,22 @@ export default {
       }, 5000);
     },
     // 刷新
-    refresh() {
-      this.queryDevStatus();
+    async refresh() {
+      let params = {
+        ctrlAddr: this.addr, // 充电设备地址
+        devType: parseInt(this.devType), // 充电设备类型
+        gunCode: 0, // 充电枪口号
+        workStatus: 0 // 工作状态
+      }
+      this.dataLoading = true;
+      let data = await queryDevStatus(params);
+      if(data.code == 1) {
+        this.devList = data.data;
+        this.dataLoading = false;
+      } else {
+        this.$message.error('获取数据失败');
+        this.dataLoading = false;
+      }
     },
     // 查询设备状态
     async queryDevStatus() {
