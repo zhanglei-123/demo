@@ -364,13 +364,19 @@ export default {
     // 查询订单列表
     async queryOrderList() {
       let params = {
-        beginTime: this.begin_time, // 开始时间
-        endTime: this.end_time, // 结束时间
         billCode: this.no, // 订单号
         terminalAddr: this.addr, // 充电终端地址
         pageCount: this.currentPage, // 当前页
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        beginTime: this.begin_time,
+        endTime: this.end_time
       };
+      // if(this.begin_time) {
+      //   params.beginTime = this.begin_time;
+      // }
+      // if(this.end_time) {
+      //   params.endTime = this.end_time;
+      // }
       this.tableLoading = true;
       let resp = await queryOrderList(params);
       if(resp.code == 1) {

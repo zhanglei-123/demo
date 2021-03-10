@@ -105,13 +105,15 @@
             <div class="soc-mini-block">
               <div class="desc">初始SOC</div>
               <div class="soc-bar">
-                <el-progress :percentage="item.beginSoc" color="#4A90E2" class="progress1"></el-progress>
+                <!-- <el-progress :percentage="item.beginSoc > 100 ? 100 : item.beginSoc" color="#4A90E2" class="progress1" :format="fmtSoc"></el-progress> -->
+                <ratio-bar :value="item.beginSoc" color="#4A90E2"></ratio-bar>
               </div>
             </div>
             <div class="soc-mini-block current-soc-block">
               <div class="desc">当前SOC</div>
               <div class="soc-bar">
-                <el-progress :percentage="item.currentSoc" color="#7ED321" class="progress2"></el-progress>
+                <!-- <el-progress :percentage="item.currentSoc > 100 ? 100 : item.currentSoc" color="#7ED321" class="progress2" :format="fmtSoc"></el-progress> -->
+                <ratio-bar :value="item.currentSoc" color="#7ED321"></ratio-bar>
               </div>
             </div>
             <div class="mini-block">
@@ -199,8 +201,12 @@
 import { queryDevStatus, ctrlCharge } from '../service';
 import { confirm } from '../common';
 import dayjs from 'dayjs';
+import RatioBar from '../components/RatioBar.vue';
+
+var flag = false;
 
 export default {
+  components: { RatioBar },
   data() {
     return {
       addr: '11010111191', // 充电设备地址
@@ -314,38 +320,33 @@ export default {
       } else {
         return val;
       }
-    }
+    },
   },
-  created() {
+  mounted() {
     this.queryDevStatus();
   },
   methods: {
+    fmtSoc(val) {
+      if(val >= 100) {
+        return 100 + '%'
+      }
+      if(val <= 0) {
+        return 0 + '%';
+      }
+      return val + '%';
+    },
     // 查询
     query() {
       this.queryDevStatus();
-      // 每隔5秒重新刷新页面
+      // 每隔30秒重新刷新页面
       clearTimeout(this.timer2);
       this.timer2 = setTimeout(() => {
         this.query();
-      }, 5000);
+      }, 30000);
     },
     // 刷新
-    async refresh() {
-      let params = {
-        ctrlAddr: this.addr, // 充电设备地址
-        devType: parseInt(this.devType), // 充电设备类型
-        gunCode: 0, // 充电枪口号
-        workStatus: 0 // 工作状态
-      }
-      this.dataLoading = true;
-      let data = await queryDevStatus(params);
-      if(data.code == 1) {
-        this.devList = data.data;
-        this.dataLoading = false;
-      } else {
-        this.$message.error('获取数据失败');
-        this.dataLoading = false;
-      }
+    refresh() {
+      location.reload();
     },
     // 查询设备状态
     async queryDevStatus() {
@@ -363,10 +364,13 @@ export default {
       } else {
         this.$message.error('获取数据失败');
         this.dataLoading = false;
+        this.devList = [];
       }
+      return this.devList
     },
     // 充电控制
-    ctrlCharge(item, btnName) {
+    async ctrlCharge(item, btnName) {
+      clearTimeout(this.timer2);
       const rs = this.operationTypeOptions.find(v => v.label == btnName);
       let params = {
         ctrlAddr: item.ctrlAddr, // 充电设备地址
@@ -384,15 +388,20 @@ export default {
         this.$set(this.startLoading, item.gunCode, true);
         let data = await ctrlCharge(params);
         clearTimeout(this.timer);
-        this.timer = setTimeout(() => {
+        this.timer = setTimeout(async () => {
           this.$set(this.startLoading, item.gunCode, false);
           if(data.code == 1) {
-            this.$message.success('操作成功');
-            this.queryDevStatus();
+            const resp = await this.queryDevStatus();
+            const info = resp.find(v => v.gunCode == item.gunCode);
+            if(info.devStatus != item.devStatus) {
+              this.$message.success('操作成功');
+            } else {
+              this.$message.warning('超时, 充电失败');
+            }
           } else {
             this.$message.error('操作失败')
           }
-        }, 5000)
+        }, 30000)
       }).catch()
     },
     // 按钮点击事件
@@ -542,5 +551,4 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.8;
 }
-
 </style>

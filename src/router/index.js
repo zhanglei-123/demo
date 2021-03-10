@@ -36,7 +36,7 @@ const routes = [
         path: '/RealtimeReport',
         name: 'RealtimeReport',
         component: () => import('../views/RealtimeReport.vue')
-      },
+      }
     ]
   },
   {
