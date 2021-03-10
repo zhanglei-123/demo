@@ -371,12 +371,6 @@ export default {
         beginTime: this.begin_time,
         endTime: this.end_time
       };
-      // if(this.begin_time) {
-      //   params.beginTime = this.begin_time;
-      // }
-      // if(this.end_time) {
-      //   params.endTime = this.end_time;
-      // }
       this.tableLoading = true;
       let resp = await queryOrderList(params);
       if(resp.code == 1) {

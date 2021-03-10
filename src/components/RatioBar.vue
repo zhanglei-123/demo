@@ -1,6 +1,6 @@
 <template>
   <div class="progress">
-    <div style="width:calc(100% - 40px)">
+    <div style="width:calc(100% - 60px)">
       <div class="progress-outer">
         <div class="progress-bar" :style="barStyle"></div>
       </div>
@@ -81,9 +81,9 @@ export default {
 }
 
 .value-label {
-  width: 30px;
+  width: 45px;
   margin-left: 5px;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 0;
 }
 </style>

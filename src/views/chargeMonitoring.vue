@@ -105,14 +105,12 @@
             <div class="soc-mini-block">
               <div class="desc">初始SOC</div>
               <div class="soc-bar">
-                <!-- <el-progress :percentage="item.beginSoc > 100 ? 100 : item.beginSoc" color="#4A90E2" class="progress1" :format="fmtSoc"></el-progress> -->
                 <ratio-bar :value="item.beginSoc" color="#4A90E2"></ratio-bar>
               </div>
             </div>
             <div class="soc-mini-block current-soc-block">
               <div class="desc">当前SOC</div>
               <div class="soc-bar">
-                <!-- <el-progress :percentage="item.currentSoc > 100 ? 100 : item.currentSoc" color="#7ED321" class="progress2" :format="fmtSoc"></el-progress> -->
                 <ratio-bar :value="item.currentSoc" color="#7ED321"></ratio-bar>
               </div>
             </div>
@@ -326,15 +324,6 @@ export default {
     this.queryDevStatus();
   },
   methods: {
-    fmtSoc(val) {
-      if(val >= 100) {
-        return 100 + '%'
-      }
-      if(val <= 0) {
-        return 0 + '%';
-      }
-      return val + '%';
-    },
     // 查询
     query() {
       this.queryDevStatus();
