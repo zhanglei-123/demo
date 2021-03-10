@@ -358,7 +358,7 @@ export default {
       return this.devList
     },
     // 充电控制
-    async ctrlCharge(item, btnName) {
+    ctrlCharge(item, btnName) {
       clearTimeout(this.timer2);
       const rs = this.operationTypeOptions.find(v => v.label == btnName);
       let params = {
@@ -373,25 +373,42 @@ export default {
         params.operationType = rs.value; 
         this.loadingText = ['正在开启...', '正在结束...'][rs.value - 1];
       }
-      confirm(`确认${btnName}吗？`).then(async () => {
-        this.$set(this.startLoading, item.gunCode, true);
-        let data = await ctrlCharge(params);
-        clearTimeout(this.timer);
-        this.timer = setTimeout(async () => {
-          this.$set(this.startLoading, item.gunCode, false);
-          if(data.code == 1) {
-            const resp = await this.queryDevStatus();
-            const info = resp.find(v => v.gunCode == item.gunCode);
-            if(info.devStatus != item.devStatus) {
+      if(rs.value == '1') {
+         confirm('确认开始充电吗？').then(async () => {
+           this.$set(this.startLoading, item.gunCode, true);
+           let data = await ctrlCharge(params);
+           clearTimeout(this.timer);
+           this.timer = setTimeout(async () => {
+             this.$set(this.startLoading, item.gunCode, false);
+             if(data.code == 1) {
+               const resp = await this.queryDevStatus();
+                const info = resp.find(v => v.gunCode == item.gunCode);
+                if(info.devStatus != item.devStatus) {
+                  this.$message.success('操作成功');
+                } else {
+                  this.$message.warning('超时, 充电失败');
+                }
+             } else {
+               this.$message.error('操作失败')
+             }
+           }, 20000)
+         }).catch()
+      } else if(rs.value == '2') {
+        confirm('确认停止充电吗？').then(async () => {
+          this.$set(this.startLoading, item.gunCode, true);
+          let data = await ctrlCharge(params);
+          clearTimeout(this.timer);
+          this.timer = setTimeout(async () => {
+            this.$set(this.startLoading, item.gunCode, false);
+            if(data.code == 1) {
               this.$message.success('操作成功');
+              this.queryDevStatus();
             } else {
-              this.$message.warning('超时, 充电失败');
+              this.$message.error('操作失败')
             }
-          } else {
-            this.$message.error('操作失败')
-          }
-        }, 30000)
-      }).catch()
+          })
+        }, 5000).catch()
+      }
     },
     // 按钮点击事件
     handleBtnClick(item, btnName) {

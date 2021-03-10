@@ -44,7 +44,11 @@
     <el-scrollbar style="height: 100%;">
       <div class="order-content">
         <el-table :data="tableData" style="width: 100%" class="custom-table">
-          <el-table-column type="index" label="序号" align="center" width="100px"></el-table-column>
+          <el-table-column type="index" label="序号" align="center" width="100px">
+            <template slot-scope="scope">
+              {{ (currentPage - 1) * pageSize + scope.$index + 1}}
+            </template>
+          </el-table-column>
           <el-table-column label="订单编号" prop="devBillCode" align="center">
             <template slot-scope="scope">
               <span @click="handleCellClick(scope.row)" class="order_code"> {{ scope.row.devBillCode }} </span>
@@ -101,8 +105,8 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[100, 200, 300, 400]"
+          :page-size.sync="pageSize"
+          :page-sizes="[10, 20, 30, 40]"
           layout="total, sizes, prev, pager, next, slot, jumper"
           :total="total">
         </el-pagination>
@@ -359,6 +363,7 @@ export default {
   },
   created() {
     this.queryOrderList();
+    console.log(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
   },
   methods: {
     // 查询订单列表
@@ -371,6 +376,12 @@ export default {
         beginTime: this.begin_time,
         endTime: this.end_time
       };
+      if(this.begin_time) {
+        params.beginTime = dayjs(this.begin_time).format('YYYY-MM-DD HH:mm:ss');
+      }
+      if(this.end_time) {
+        params.endTime = dayjs(this.end_time).format('YYYY-MM-DD HH:mm:ss');
+      }
       this.tableLoading = true;
       let resp = await queryOrderList(params);
       if(resp.code == 1) {
@@ -430,7 +441,7 @@ export default {
       rs[rs.length - 1] = `${rs[rs.length - 1]}-${rsFirst}`;
       return rs;
     },
-    handleSizeChange() {
+    handleSizeChange(val) {
       this.queryOrderList();
     },
     handleCurrentChange() {
