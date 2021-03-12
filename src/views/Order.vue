@@ -329,7 +329,7 @@ export default {
       tableLoading: false,
       devTypeOptions: ['直流', '单相交流', '三相交流'], // 设备类型
       startTypeOptions: [
-        '未知', 
+        '缺省值', 
         '后台APP启动', 
         '在线刷卡启动', 
         '在线VIN启动', 
@@ -363,7 +363,6 @@ export default {
   },
   created() {
     this.queryOrderList();
-    console.log(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
   },
   methods: {
     // 查询订单列表

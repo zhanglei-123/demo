@@ -64,7 +64,7 @@ export default {
 }
 
 .progress-outer {
-  height: 0.38rem;
+  height: 6px;
   position: relative;
   background: #ebeef5;
   overflow: hidden;
@@ -77,7 +77,6 @@ export default {
   top: 0;
   height: 100%;
   transition: width 0.6s ease;
-  border-radius: 100px;
 }
 
 .value-label {

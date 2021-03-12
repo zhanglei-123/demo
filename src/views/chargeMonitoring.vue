@@ -74,14 +74,7 @@
     </div>
     <el-scrollbar style="height: 100%;">
       <div class="main-wrapper">
-        <div 
-          class="main-block" 
-          v-for="item in devList" 
-          :key="item.gunCode"
-          v-loading="startLoading[item.gunCode]"
-          :element-loading-text="loadingText"
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="rgba(0,0,0,0.8)">
+        <div class="main-block" v-for="item in devList"  :key="item.gunCode">
           <div class="top">
             <div class="top-left">
               <img :src="'/images/' + imgSrc[item.devStatus]" alt="">
@@ -182,12 +175,13 @@
             </div>
           </div>
           <div class="charge-btn-block">
-            <button
+            <el-button
               class="charge-btn"
               @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
-              :disabled="![2,4].includes(item.devStatus)">
-              {{ btnNameOptions[item.devStatus] }}
-            </button>
+              :disabled="![2,4].includes(item.devStatus)"
+              :loading="startLoading[item.gunCode]">
+              {{ startLoading[item.gunCode] ? (item.devStatus == 2 ? '正在开启...' : '正在结束...') : btnNameOptions[item.devStatus] }}
+            </el-button>
           </div>
         </div>
       </div>
@@ -195,13 +189,13 @@
   </div> 
 </template>
 
+
+
 <script>
 import { queryDevStatus, ctrlCharge } from '../service';
 import { confirm } from '../common';
 import dayjs from 'dayjs';
 import RatioBar from '../components/RatioBar.vue';
-
-var flag = false;
 
 export default {
   components: { RatioBar },
@@ -263,7 +257,7 @@ export default {
       ], // 类型列表
       btnNameOptions: ['未知状态', '请插枪', '开始充电', '恢复充电', '停止充电', '请拔枪', '暂停服务', '检查故障'],
       startTypeOptions: [
-        '未知', 
+        '缺省值', 
         '后台APP启动', 
         '在线刷卡启动', 
         '在线VIN启动', 
@@ -294,7 +288,6 @@ export default {
         'fault.svg'
       ],
       startLoading: {},
-      loadingText: ''
     }
   },
   filters: {
@@ -309,7 +302,7 @@ export default {
       if(!val) {
         return '--';
       } else {
-        return dayjs(val).format('YYYY-MM-DD hh:mm:ss');
+        return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
       }
     },
     fmtEmptyText(val) {
@@ -327,11 +320,11 @@ export default {
     // 查询
     query() {
       this.queryDevStatus();
-      // 每隔30秒重新刷新页面
+      // 每隔5秒重新刷新页面
       clearTimeout(this.timer2);
       this.timer2 = setTimeout(() => {
         this.query();
-      }, 30000);
+      }, 5000);
     },
     // 刷新
     refresh() {
@@ -371,7 +364,6 @@ export default {
       }
       if(rs) {
         params.operationType = rs.value; 
-        this.loadingText = ['正在开启...', '正在结束...'][rs.value - 1];
       }
       if(rs.value == '1') {
          confirm('确认开始充电吗？').then(async () => {
@@ -380,6 +372,7 @@ export default {
            clearTimeout(this.timer);
            this.timer = setTimeout(async () => {
              this.$set(this.startLoading, item.gunCode, false);
+             this.btnName = btnName;
              if(data.code == 1) {
                const resp = await this.queryDevStatus();
                 const info = resp.find(v => v.gunCode == item.gunCode);
@@ -398,8 +391,9 @@ export default {
           this.$set(this.startLoading, item.gunCode, true);
           let data = await ctrlCharge(params);
           clearTimeout(this.timer);
-          this.timer = setTimeout(async () => {
+          this.timer = setTimeout(() => {
             this.$set(this.startLoading, item.gunCode, false);
+            this.btnName = btnName;
             if(data.code == 1) {
               this.$message.success('操作成功');
               this.queryDevStatus();
@@ -407,7 +401,7 @@ export default {
               this.$message.error('操作失败')
             }
           })
-        }, 5000).catch()
+        }, 10000).catch()
       }
     },
     // 按钮点击事件
@@ -538,6 +532,8 @@ export default {
   align-items: center;
   justify-content: center;
   margin: 10px 0;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .charge-btn {
@@ -551,6 +547,12 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(74,144,226,0.50);
   border-radius: 6px;
   cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    background: #4A90E2;
+    box-shadow: 0 2px 4px 0 rgba(74,144,226,0.50);
+  }
 }
 
 button:disabled {
