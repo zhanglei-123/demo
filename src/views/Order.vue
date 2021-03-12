@@ -27,7 +27,8 @@
           v-model="begin_time"
           type="datetime"
           placeholder="选择开始时间"
-          size="mini">
+          size="mini"
+          :picker-options="pickerOptionsStart">
         </el-date-picker>
       </div>
       <div class="operation-item">
@@ -36,7 +37,8 @@
           v-model="end_time"
           type="datetime"
           placeholder="选择结束时间"
-          size="mini">
+          size="mini"
+          :picker-options="pickerOptionsEnd">
         </el-date-picker>
       </div>
       <el-button type="primary" size="mini" class="custom-btn" @click="queryOrderList">查询</el-button>
@@ -350,6 +352,20 @@ export default {
       currentPage: 1, // 当前页
       pageSize: 10,
       total: 0, 
+      pickerOptionsStart: {
+        disabledDate: time => {
+          if(this.end_time) {
+            return time.getTime() > new Date(this.end_time).getTime();
+          }
+        }
+      },
+      pickerOptionsEnd: {
+        disabledDate: time => {
+          if(this.begin_time) {
+            return time.getTime() < new Date(this.begin_time).getTime();
+          }
+        }
+      }
     }
   },
   filters: {
@@ -381,14 +397,25 @@ export default {
       if(this.end_time) {
         params.endTime = dayjs(this.end_time).format('YYYY-MM-DD HH:mm:ss');
       }
+      if(this.begin_time && this.end_time) {
+        if(this.begin_time >= this.end_time) {
+          this.$message.warning('结束时间不能小于开始时间');
+          return;
+        }
+      }
       this.tableLoading = true;
-      let resp = await queryOrderList(params);
-      if(resp.code == 1) {
-        this.tableData = resp.data.data;
-        this.total = resp.data.totalCount;
-        this.tableLoading = false;
+      if(this.addr) {
+        let resp = await queryOrderList(params);
+        if(resp.code == 1) {
+          this.tableData = resp.data.data;
+          this.total = resp.data.totalCount;
+          this.tableLoading = false;
+        } else {
+          this.$message.error('数据获取失败');
+          this.tableLoading = false;
+        }
       } else {
-        this.$message.error('数据获取失败');
+        this.$message.warning('请输入充电设备地址');
         this.tableLoading = false;
       }
     },

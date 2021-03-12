@@ -65,12 +65,6 @@
         @click="query">
         查询
       </el-button>
-      <el-button 
-        size="mini"
-        class="custom-btn" 
-        @click="refresh">
-        刷新
-      </el-button>
     </div>
     <el-scrollbar style="height: 100%;">
       <div class="main-wrapper">
@@ -180,7 +174,7 @@
               @click="handleBtnClick(item, btnNameOptions[item.devStatus])"
               :disabled="![2,4].includes(item.devStatus)"
               :loading="startLoading[item.gunCode]">
-              {{ startLoading[item.gunCode] ? (item.devStatus == 2 ? '正在开启...' : '正在结束...') : btnNameOptions[item.devStatus] }}
+              {{ startLoading[item.gunCode] ? loadText : btnNameOptions[item.devStatus] }}
             </el-button>
           </div>
         </div>
@@ -288,6 +282,8 @@ export default {
         'fault.svg'
       ],
       startLoading: {},
+      loadText: '',
+      timer: {}, // 定时器
     }
   },
   filters: {
@@ -326,10 +322,6 @@ export default {
         this.query();
       }, 5000);
     },
-    // 刷新
-    refresh() {
-      location.reload();
-    },
     // 查询设备状态
     async queryDevStatus() {
       let params = {
@@ -339,16 +331,21 @@ export default {
         workStatus: parseInt(this.status) || 0 // 工作状态
       }
       this.dataLoading = true;
-      let data = await queryDevStatus(params);
-      if(data.code == 1) {
-        this.devList = data.data;
-        this.dataLoading = false;
+      if(this.addr) {
+        let data = await queryDevStatus(params);
+        if(data.code == 1) {
+          this.devList = data.data;
+          this.dataLoading = false;
+        } else {
+          this.$message.error('获取数据失败');
+          this.dataLoading = false;
+          this.devList = [];
+        }
       } else {
-        this.$message.error('获取数据失败');
+        this.$message.warning('请输入充电设备地址');
         this.dataLoading = false;
-        this.devList = [];
+        clearTimeout(this.timer2);
       }
-      return this.devList
     },
     // 充电控制
     ctrlCharge(item, btnName) {
@@ -368,19 +365,22 @@ export default {
       if(rs.value == '1') {
          confirm('确认开始充电吗？').then(async () => {
            this.$set(this.startLoading, item.gunCode, true);
+           this.loadText = '正在开启...';
            let data = await ctrlCharge(params);
-           clearTimeout(this.timer);
-           this.timer = setTimeout(async () => {
+           clearTimeout(this.timer[item.gunCode]);
+           this.timer[item.gunCode] = setTimeout(async () => {
              this.$set(this.startLoading, item.gunCode, false);
-             this.btnName = btnName;
              if(data.code == 1) {
-               const resp = await this.queryDevStatus();
-                const info = resp.find(v => v.gunCode == item.gunCode);
-                if(info.devStatus != item.devStatus) {
-                  this.$message.success('操作成功');
-                } else {
-                  this.$message.warning('超时, 充电失败');
-                }
+               this.queryDevStatus();
+               this.$message.success('操作成功');
+                console.log(item.gunCode)
+                // const resp = await this.queryDevStatus();
+                // const info = resp.find(v => v.gunCode == item.gunCode);
+                // if(info.devStatus != item.devStatus) {
+                //   this.$message.success('操作成功');
+                // } else {
+                //   this.$message.warning('超时, 充电失败');
+                // }
              } else {
                this.$message.error('操作失败')
              }
@@ -389,11 +389,11 @@ export default {
       } else if(rs.value == '2') {
         confirm('确认停止充电吗？').then(async () => {
           this.$set(this.startLoading, item.gunCode, true);
+          this.loadText = '正在结束...';
           let data = await ctrlCharge(params);
-          clearTimeout(this.timer);
+          // clearTimeout(this.timer);
           this.timer = setTimeout(() => {
             this.$set(this.startLoading, item.gunCode, false);
-            this.btnName = btnName;
             if(data.code == 1) {
               this.$message.success('操作成功');
               this.queryDevStatus();
@@ -401,7 +401,7 @@ export default {
               this.$message.error('操作失败')
             }
           })
-        }, 10000).catch()
+        }, 5000).catch()
       }
     },
     // 按钮点击事件
