@@ -49,7 +49,6 @@
           class="custom-select" 
           v-model="devType" 
           placeholder="请选择" 
-          clearable
           size="mini">
           <el-option 
             v-for="item in devTypeOptions" 
@@ -334,7 +333,12 @@ export default {
       if(this.addr) {
         let data = await queryDevStatus(params);
         if(data.code == 1) {
-          this.devList = data.data;
+          this.devList = data.data.map((item, index) => {
+            return {
+              idx: index,
+              ...item
+            }
+          });
           this.dataLoading = false;
         } else {
           this.$message.error('获取数据失败');
@@ -356,13 +360,18 @@ export default {
         devType: item.devType, // 充电设备类型
         gunCode: item.gunCode, // 充电枪口号
         billCode: item.billCode, // 订单号 
-        // chargeType: item.startType, // 启动充电类型
         operationType: '', // 操作类型
       }
       if(rs) {
         params.operationType = rs.value; 
       }
-      if(rs.value == '1') {
+      const param2 = {
+        ctrlAddr: this.addr,
+        devType: parseInt(this.devType), 
+        gunCode: item.gunCode, 
+        workStatus: parseInt(this.status) || 0
+      }
+      if(rs.value === 1) {
          confirm('确认开始充电吗？').then(async () => {
            this.$set(this.startLoading, item.gunCode, true);
            this.loadText = '正在开启...';
@@ -371,28 +380,21 @@ export default {
            this.timer[item.gunCode] = setTimeout(async () => {
              this.$set(this.startLoading, item.gunCode, false);
              if(data.code == 1) {
-               this.queryDevStatus();
+               let resp = await queryDevStatus(param2);
+               this.$set(this.devList, item.idx, resp.data[0]);
                this.$message.success('操作成功');
-                console.log(item.gunCode)
-                // const resp = await this.queryDevStatus();
-                // const info = resp.find(v => v.gunCode == item.gunCode);
-                // if(info.devStatus != item.devStatus) {
-                //   this.$message.success('操作成功');
-                // } else {
-                //   this.$message.warning('超时, 充电失败');
-                // }
              } else {
                this.$message.error('操作失败')
              }
            }, 20000)
          }).catch()
-      } else if(rs.value == '2') {
+      } else if(rs.value === 2) {
         confirm('确认停止充电吗？').then(async () => {
           this.$set(this.startLoading, item.gunCode, true);
           this.loadText = '正在结束...';
           let data = await ctrlCharge(params);
-          // clearTimeout(this.timer);
-          this.timer = setTimeout(() => {
+          clearTimeout(this.timer[item.gunCode]);
+          this.timer[item.gunCode] = setTimeout(() => {
             this.$set(this.startLoading, item.gunCode, false);
             if(data.code == 1) {
               this.$message.success('操作成功');
@@ -400,8 +402,8 @@ export default {
             } else {
               this.$message.error('操作失败')
             }
-          })
-        }, 5000).catch()
+          }, 5000)
+        }).catch()
       }
     },
     // 按钮点击事件
