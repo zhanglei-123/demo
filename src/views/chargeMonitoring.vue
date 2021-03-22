@@ -85,10 +85,7 @@
         >
           <div class="top">
             <div class="top-left">
-              <img
-                :src="'../assets/images' + imgSrc[item.devStatus]"
-                alt=""
-              >
+              <img :src="imgSrc[item.devStatus]" alt="">
             </div>
             <div class="top-right">
               <div class="charge-mini-block">
@@ -309,13 +306,13 @@ export default {
       ],
       imgSrc: [
         "",
-        "free.svg",
-        "gun.svg",
-        "pause.svg",
-        "charging.svg",
-        "charged.svg",
-        "off.svg",
-        "fault.svg",
+        "./images/free.svg",
+        "./images/gun.svg",
+        "./images/pause.svg",
+        "./images/charging.svg",
+        "./images/charged.svg",
+        "./images/off.svg",
+        "./images/fault.svg",
       ],
       startLoading: {},
       loadText: "",
