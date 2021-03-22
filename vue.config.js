@@ -1,9 +1,12 @@
 module.exports = {
+  productionSourceMap: false,
+  publicPath: '',
   devServer: {
     port: 89,
+    disableHostCheck: true,
     proxy: {
       '/api': {
-        target: 'http://192.168.1.150:8080',
+        target: 'http://172.16.0.6:9091',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

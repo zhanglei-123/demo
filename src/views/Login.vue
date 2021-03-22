@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-content">
       <div class="left">
-        <img src="/images/bg.svg" alt="">
+        <img src="../assets/images/bg.svg" alt="">
       </div>
       <div class="right">
         <div class="login-form">
@@ -14,7 +14,7 @@
                 class="login-input"
                 v-model="form.username" 
                 placeholder="请输入用户名">
-                <img src="/images/user.svg" alt="" slot="prefix">
+                <img src="../assets/images/user.svg" alt="" slot="prefix">
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -23,7 +23,7 @@
                 v-model="form.password" 
                 placeholder="请输入密码"
                 type="password">
-                <img src="/images/pwd.svg" alt="" slot="prefix">
+                <img src="../assets/images/pwd.svg" alt="" slot="prefix">
               </el-input>
             </el-form-item>
           </el-form>

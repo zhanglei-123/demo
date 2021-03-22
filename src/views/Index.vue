@@ -4,7 +4,7 @@
       <div class="charge-wrap">
         <div class="charge-block" @click="monitorChargingStatus">
           <div class="block">
-            <img src="/images/charge.svg" alt="">
+            <img src="../assets/images/charge.svg" alt="">
           </div>
           <div class="desc">充电状态监视</div>
         </div>
@@ -12,15 +12,15 @@
       <div class="order-wrap">
         <div class="order-block" @click="queryOrder">
           <div class="mini-block">
-            <img src="/images/order.svg" alt="">
+            <img src="../assets/images/order.svg" alt="">
           </div>
           <div class="desc">订单查询</div>
         </div>
       </div>
       <div class="message-wrap">
-        <div class="message-block" @click="queryMessage">
+        <div class="message-block">
           <div class="mini-block">
-            <img src="/images/message.svg" alt="">
+            <img src="../assets/images/message.svg" alt="">
           </div>
           <div class="desc">报文查看</div>
         </div>
@@ -28,7 +28,7 @@
       <div class="document-wrap">
         <div class="document-block">
           <div class="block">
-            <img src="/images/doc.svg" alt="">
+            <img src="../assets/images/doc.svg" alt="">
           </div>
           <div class="desc">开发资料</div>
         </div>
@@ -51,7 +51,6 @@ export default {
     }
   },
   mounted() {
-    console.log(Cookies.get('userName'))
   },
   methods: {
     // 报文查看
@@ -90,7 +89,7 @@ export default {
 .charge-wrap {
   width: 500px;
   height: 300px;
-  background-image: url('/images/chargebg.svg');
+  background-image: url('../assets/images/chargebg.svg');
   margin-right: 10px;
   margin-bottom: 10px;
 }
@@ -106,7 +105,7 @@ export default {
 .order-wrap {
   width: 300px;
   height: 300px;
-  background-image: url('/images/orderbg.svg');
+  background-image: url('../assets/images/orderbg.svg');
   margin-bottom: 10px;
 }
 
@@ -121,7 +120,7 @@ export default {
 .message-wrap {
   width: 300px;
   height: 300px;
-  background-image: url('/images/messagebg.svg');
+  background-image: url('../assets/images/messagebg.svg');
   margin-right: 10px;
 }
 
@@ -136,7 +135,7 @@ export default {
 .document-wrap {
   width: 500px;
   height: 300px;
-  background-image: url('/images/docbg.svg');
+  background-image: url('../assets/images/docbg.svg');
 }
 
 .document-block {

@@ -86,7 +86,7 @@
           <div class="top">
             <div class="top-left">
               <img
-                :src="'/images/' + imgSrc[item.devStatus]"
+                :src="'../assets/images' + imgSrc[item.devStatus]"
                 alt=""
               >
             </div>
